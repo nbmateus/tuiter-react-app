@@ -1,23 +1,30 @@
 import React from 'react';
 import 'materialize-css/dist/css/materialize.css';
 import { NavLink } from 'react-router-dom'
+import Cookies from 'js-cookie';
+import axios from 'axios';
+
 
 class Navbar extends React.Component {
-
-
+    constructor(props){
+        super(props);
+        this.state = {}
+    }
+    
     render() {
 
-        var navButtons = this.props.userIsAuthenticated ? (
+        var navButtons = this.props.loggedIn ? (
             <div>
-                <li><NavLink to = "/logout">Log Out</NavLink ></li >
-            </div >
+                <li><NavLink to="" onClick={this.props.appHandleLogOut} >Log Out</NavLink></li>
+            </div>
 
-        ): (
+        ):(
             <div>
                 <li><NavLink to = "/login">Log In</NavLink ></li >
                 <li><NavLink to="/signup">Sign Up</NavLink></li>
             </div >
         );
+
         return (
             <nav>
                 <div className="nav-wrapper indigo">
