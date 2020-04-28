@@ -1,6 +1,5 @@
 import React from 'react';
 import axios from 'axios';
-import Cookies from 'js-cookie';
 import PostList from './PostList';
 
 class Profile extends React.Component {
@@ -8,101 +7,60 @@ class Profile extends React.Component {
         super(props)
         this.state = {
             profile: {},
-            error: false,
-            mainPostList: null,
-            nextPage: null,
-            contentIsVisible: true,
+            profileDoesNotExist: false,
         }
     }
 
+    /*componentWillReceiveProps(nextProps) {
+        if(nextProps.match.params.profileUsername != this.state.profile.user){
+          this.getProfile()
+        }
+    }*/
+
+    componentDidUpdate(prevProps) {
+        if (this.state.profile.user !== this.props.match.params.profileUsername) {
+            this.getProfile()
+        }
+      }
+
     componentDidMount() {
+        this.getProfile();
+    }
+
+
+    getProfile(){
         axios.get('http://nbmateus.pythonanywhere.com/accounts/profile/' + this.props.match.params.profileUsername + '/')
-            .then(response => {
-                this.setState({
-                    profile: response.data
-                })
-                this.getMainPostList()
+        .then(response => {
+            this.setState({
+                profile: response.data,
+                profileDoesNotExist: false
             })
-            .catch(error => {
-                console.log("ERROR ", error.response)
-                this.setState({
-                    error: true
-                });
-            })
-    }
-
-    getMainPostList() {
-        axios.get(this.state.profile.mainPostList, {
-            headers: {
-                Authorization: Cookies.get('authtoken')
-            }
         })
-            .then(response => {
-                this.setState({
-                    mainPostList: response.data.results,
-                    nextPage: response.data.next
-                })
-            })
-            .catch(error => {
-                console.log("ERROR: ", error.response);
-                this.setState({
-                    contentIsVisible: false
-                })
-            })
+        .catch(error => {
+            console.log("ERROR ", error.response)
+            this.setState({
+                profileDoesNotExist: true
+            });
+        })
     }
-
-    loadNextPage(){
-        console.log("next page link ", this.state.nextPage)
-        axios.get(this.state.nextPage, {
-            headers: {
-                Authorization: Cookies.get('authtoken')
-            }})
-            .then(response => {
-                const array = [...this.state.mainPostList, ...response.data.results]
-                this.setState({
-                    nextPage: response.data.next,
-                    mainPostList: array
-                })
-            })
-            .catch(error => {
-                console.log("ERROR ", error.response)
-            })
-    }
-
 
     render() {
-        var loadMore = <div></div>
-        loadMore = (this.state.mainPostList != null && this.state.nextPage == null) ? (
+        var mainPostListView = this.state.profile.mainPostList ? (
             <div>
-                no hay mas nada
+                <PostList postListUrl={this.state.profile.mainPostList} />
             </div>
         ) : (
-                <div className="center">
-                    <a className="waves-effect waves-light btn-small" onClick={ () => this.loadNextPage()}>Load More</a>
-                </div>
+                <div></div>
             )
 
-        const mainPostListView = this.state.contentIsVisible && this.state.mainPostList != null ? (
-            <div>
-                <PostList postList={this.state.mainPostList} />
-            </div>
-        ) : (
-
-                <div className="card grey">
-                    <div className="card-content white-text center">
-                        <h4><i className="material-icons">https</i>This profile is private</h4>
-                    </div>
-                </div>
-            )
-
-
-        const profileview = this.state.error ? (
+        var profileview = this.state.profileDoesNotExist ? (
             <div className="container">
                 <div className="card">
                     <div className="center">
-                        <img width="100" className="circle responsive-img" src="https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png" />
                         <br />
-
+                        <br />
+                        <img alt="" width="100" className="circle responsive-img" src="https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png" />
+                        <br />
                         <br />
                         <span className="card-title">@{this.props.match.params.profileUsername}</span>
                     </div>
@@ -117,7 +75,9 @@ class Profile extends React.Component {
                 <div className="container grey">
                     <div className="card">
                         <div className="center">
-                            <img width="100" className="circle responsive-img" src="https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png" />
+                            <br />
+                            <br />
+                            <img alt="" width="100" className="circle responsive-img" src="https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png" />
                             <br />
                             <span className="card-title"><h4>{this.state.profile.fullname}</h4></span>
 
@@ -140,11 +100,7 @@ class Profile extends React.Component {
                             </div>
                         </div>
                     </div>
-
                     {mainPostListView}
-
-                    {loadMore}
-                    <br />
                 </div>
             )
 

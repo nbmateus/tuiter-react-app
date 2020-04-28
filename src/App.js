@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import Footer from './components/Footer';
+import Home from './components/Home';
 import ActivateAccount from './components/ActivateAccount';
 import EmailVerification from './components/EmailVerification';
 import Profile from './components/Profile';
@@ -28,6 +29,7 @@ class App extends React.Component {
 			this.handleLogIn()
 		}
 	}
+	
 
 	handleLogOut() {
 		axios.post('http://nbmateus.pythonanywhere.com/accounts/logout/', {}, {
@@ -71,6 +73,7 @@ class App extends React.Component {
 			<BrowserRouter>
 				<div className="App grey">
 					<Navbar loggedIn={this.state.userLoggedIn} currentUsername={this.state.username} appHandleLogOut={this.handleLogOut} />
+					<Route exact path='/' render={(props) => <Home {...props} loggedIn={this.state.userLoggedIn} />} />
 					<Route exact path='/signup' component={SignUp} />
 					<Route exact path='/login' render={(props) => <SignIn {...props} handleLogIn={this.handleLogIn} />} />
 					<Route exact path='/account-verified' component={ActivateAccount} />
