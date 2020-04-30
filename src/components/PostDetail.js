@@ -1,6 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import Cookies from 'js-cookie'
+import {Link} from 'react-router-dom';
 
 class PostDetail extends React.Component {
 
@@ -65,16 +66,16 @@ class PostDetail extends React.Component {
         var rePostDiv = <div></div>
 
         if (this.state.post.rePost != null) {
-            rePostDiv = this.state.post.rePost == "private_post" ? (
+            rePostDiv = this.state.post.rePost === "private_post" ? (
                 <div className="card grey">
                     <div className="card-content">
-                        <p className="white-text"><i className="material-icons">https</i> This content is not visible because it belongs to a private user</p>
+            <p className="white-text"><i className="material-icons">https</i> This shared content is not visible for you because it belongs to a private profile.</p>
                     </div>
                 </div>
             ) : (
                     <div className="card">
                         <div className="card-content">
-                            <span className="card-title grey-text text-darken-4">@{this.state.post.rePost.user}</span>
+                            <Link to={"/profile/"+this.state.post.rePost.user}><span className="card-title grey-text text-darken-4">@{this.state.post.rePost.user}</span></Link>
                             <p>{this.state.post.rePost.text}</p>
                             {this.postHasImage(this.state.post)}
                         </div>
@@ -89,7 +90,7 @@ class PostDetail extends React.Component {
                     <p className="grey-text right">
                         {this.formatDate(this.state.post.timestamp)}
                     </p>
-                    <span className="card-title grey-text text-darken-4">@{this.state.post.user}</span>
+                    <Link to={"/profile/"+this.state.post.user}><span className="card-title grey-text text-darken-4">@{this.state.post.user}</span></Link>
                     <p>{this.state.post.text}</p>
                     {this.postHasImage(this.state.post)}
                     {rePostDiv}

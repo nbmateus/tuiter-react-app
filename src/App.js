@@ -10,6 +10,7 @@ import EmailVerification from './components/EmailVerification';
 import Profile from './components/Profile';
 import axios from 'axios';
 import { BrowserRouter, Route } from 'react-router-dom';
+import M from 'materialize-css/dist/js/materialize';
 
 class App extends React.Component {
 
@@ -24,10 +25,15 @@ class App extends React.Component {
 	}
 
 	componentDidMount() {
-		
+		//M.AutoInit();
+		var dropdownxd = M.Dropdown.init(document.querySelector('#idDropdownTrigger'), {
+            coverTrigger: false,
+		})
+		M.Sidenav.init(document.querySelectorAll('.sidenav'), {});
 		if (Cookies.get('authtoken')) {
 			this.handleLogIn()
 		}
+		console.log("DROPDOWN INITIALIZED ", dropdownxd)
 	}
 	
 
