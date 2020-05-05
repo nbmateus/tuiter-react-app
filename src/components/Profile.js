@@ -1,6 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 import PostList from './PostList';
+import Cookies from 'js-cookie';
+import PostForm from './PostForm';
 
 class Profile extends React.Component {
     constructor(props) {
@@ -8,50 +10,153 @@ class Profile extends React.Component {
         this.state = {
             profile: {},
             profileDoesNotExist: false,
+            postList: [],
+            postListNextPage: null,
+            postListVisible: true,
+            postListLoaded: false,
+
         }
+        this.updatePostList = this.updatePostList.bind(this)
+        this.deletePost = this.deletePost.bind(this)
     }
 
-    /*componentWillReceiveProps(nextProps) {
-        if(nextProps.match.params.profileUsername != this.state.profile.user){
-          this.getProfile()
-        }
-    }*/
-
     componentDidUpdate(prevProps) {
-        if (this.state.profile.user !== this.props.match.params.profileUsername) {
+        if (prevProps.match.params.profileUsername !== this.props.match.params.profileUsername) {
             this.getProfile()
         }
-      }
+    }
 
     componentDidMount() {
         this.getProfile();
     }
 
 
-    getProfile(){
+    getProfile() {
         axios.get('http://nbmateus.pythonanywhere.com/accounts/profile/' + this.props.match.params.profileUsername + '/')
-        .then(response => {
-            this.setState({
-                profile: response.data,
-                profileDoesNotExist: false
+            .then(response => {
+                this.setState({
+                    profile: response.data,
+                    profileDoesNotExist: false
+                }, () => {
+                    window.scrollTo(0, 0)
+                    this.getPostList();
+                })
             })
-        })
-        .catch(error => {
-            console.log("ERROR ", error.response)
-            this.setState({
-                profileDoesNotExist: true
-            });
-        })
+            .catch(error => {
+                this.setState({
+                    profileDoesNotExist: true
+                });
+            })
     }
 
+
+    loadNextPage() {
+        axios.get(this.state.postListNextPage, {
+            headers: {
+                Authorization: Cookies.get('authtoken')
+            }
+        })
+            .then(response => {
+                this.setState({
+                    postListNextPage: response.data.next,
+                    postList: [...this.state.postList, ...response.data.results]
+                })
+            })
+            .catch(error => {
+            })
+    }
+
+    getPostList() {
+        axios.get(this.state.profile.mainPostList, {
+            headers: {
+                Authorization: Cookies.get('authtoken')
+            }
+        })
+            .then(response => {
+                this.setState({
+                    postList: response.data.results,
+                    postListNextPage: response.data.next,
+                    postListLoaded: true
+                })
+            })
+            .catch(error => {
+                this.setState({
+                    postListVisible: false
+                })
+
+            })
+    }
+
+    updatePostList() {
+        this.getPostList()
+    }
+
+    deletePost(postId) {
+        axios.delete('http://nbmateus.pythonanywhere.com/postings/post-detail/' + postId + '/', {
+            headers: {
+                Authorization: Cookies.get('authtoken')
+            }
+        })
+            .then(response => {
+                this.updatePostList()
+            })
+            .catch(error => {
+
+            })
+    }
+
+
     render() {
-        var mainPostListView = this.state.profile.mainPostList ? (
-            <div>
-                <PostList postListUrl={this.state.profile.mainPostList} />
-            </div>
+
+        var loadMore = this.state.postListNextPage == null ? (
+            <div></div>
+        ) : (
+                <div className="center">
+                    <button className="waves-effect waves-light btn-small" onClick={() => this.loadNextPage()}>Load More</button>
+                </div>
+            )
+
+        var postFormView = this.props.loggedUsername === this.state.profile.user ? (
+            <PostForm updatePostList={this.updatePostList} />
         ) : (
                 <div></div>
             )
+
+        var mainPostListView;
+
+        if (this.state.postListVisible) {
+            mainPostListView = this.state.postListLoaded ? (
+                <div>
+                    {postFormView}
+                    <div>
+                        <PostList
+                            postList={this.state.postList}
+                            loggedIn={this.props.userLoggedIn}
+                            loggedUsername={this.props.loggedUsername}
+                            updatePostList={this.updatePostList}
+                            deletePost={this.deletePost}
+                        />
+                    </div>
+                </div>
+            ) : (
+                    <div className="progress" >
+                        <div className="indeterminate"></div>
+                    </div >
+                )
+
+        } else {
+            mainPostListView = (
+                <div className="card grey darken-2">
+                    <div className="card-content white-text center">
+                        <h4><i className="material-icons">https</i>This profile is private.</h4>
+                    </div>
+                </div>
+            )
+        }
+
+
+
+
 
         var profileview = this.state.profileDoesNotExist ? (
             <div className="container">
@@ -59,7 +164,7 @@ class Profile extends React.Component {
                     <div className="center">
                         <br />
                         <br />
-                        <img alt="" width="100" className="circle responsive-img" src="https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png" />
+                        <img alt="" width="100" className="circle responsive-img" src="https://f0.pngfuel.com/png/178/595/black-profile-icon-illustration-user-profile-computer-icons-login-user-avatars-png-clip-art.png" />
                         <br />
                         <br />
                         <span className="card-title">@{this.props.match.params.profileUsername}</span>
@@ -77,7 +182,7 @@ class Profile extends React.Component {
                         <div className="center">
                             <br />
                             <br />
-                            <img alt="" width="100" className="circle responsive-img" src="https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png" />
+                            <img alt="" width="100" className="circle responsive-img" src="https://f0.pngfuel.com/png/178/595/black-profile-icon-illustration-user-profile-computer-icons-login-user-avatars-png-clip-art.png" />
                             <br />
                             <span className="card-title"><h4>{this.state.profile.fullname}</h4></span>
 
@@ -101,6 +206,9 @@ class Profile extends React.Component {
                         </div>
                     </div>
                     {mainPostListView}
+                    <br />
+                    {loadMore}
+                    <br />
                 </div>
             )
 

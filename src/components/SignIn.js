@@ -30,20 +30,18 @@ class SignIn extends React.Component {
 
         axios.post('http://nbmateus.pythonanywhere.com/accounts/login/', data)
             .then(response => {
-                console.log("loguie");
                 Cookies.set('authtoken', "Token " + response.data.key);
                 this.props.handleLogIn();
                 this.props.history.push('/');
 
             })
             .catch(error => {
-                console.log("ERROR: ", error.response.data);
-                if(error.response.data.non_field_errors){
+                if (error.response.data.non_field_errors) {
                     this.setState({
-                         formError: error.response.data.non_field_errors
+                        formError: error.response.data.non_field_errors
                     })
                 }
-                
+
             })
 
     }
@@ -64,10 +62,14 @@ class SignIn extends React.Component {
                     <span className="black-text">
                         <form onSubmit={this.handleSubmit}>
                             {error}
-                            <input id="formUsername" type="text" className="validate" onChange={this.handleChange} required/>
-                            <label htmlFor="formUsername">Username or Email</label>
-                            <input id="formPassword" type="password" className="validate" onChange={this.handleChange} required/>
-                            <label htmlFor="formPassword">Password</label>
+                            <div className="input-field col s6">
+                                <input id="formUsername" type="text" className="validate" onChange={this.handleChange} required />
+                                <label htmlFor="formUsername">Username or Email</label>
+                            </div>
+                            <div className="input-field col s6">
+                                <input id="formPassword" type="password" className="validate" onChange={this.handleChange} required />
+                                <label htmlFor="formPassword">Password</label>
+                            </div>
                             <br />
                             <br />
                             <button className="waves-effect waves-light btn-small">Log In</button>

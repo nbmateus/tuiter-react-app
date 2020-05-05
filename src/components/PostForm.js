@@ -8,8 +8,29 @@ class PostForm extends React.Component {
         this.state = {
             text: "",
             mainPost: null,
-            rePost: null,
+            rePost: props.rePost,
             postStatus: null,
+        }
+    }
+
+    componentDidMount(){
+        this.updateStateOnPropsChange()
+    }
+
+    componentDidUpdate(){
+        this.updateStateOnPropsChange()
+    }
+
+    updateStateOnPropsChange(){
+        if(this.props.mainPost && this.props.mainPost !== this.state.mainPost){
+            this.setState({
+                mainPost: this.props.mainPost
+            })
+        }
+        if(this.props.rePost && this.props.rePost !== this.state.rePost){
+            this.setState({
+                rePost: this.props.rePost
+            })
         }
     }
 
@@ -31,40 +52,29 @@ class PostForm extends React.Component {
             }
         })
             .then(response => {
-                console.log("envie post")
                 this.setState({
                     text: "",
                     mainPost: null,
                     rePost: null,
-                    postStatus: "Your post has been published!",
                 },() => { 
-                    console.log("voy a actualizar lista");
                     this.props.updatePostList() })
 
             })
             .catch(error => {
-                console.log("ERROR ",error.response)
             })
 
     }
 
     render() {
 
-        var postStatusMessage = this.state.postStatus !== null ? (
-            <ul className="collection container">
-                <a href="#!" className="collection-item active green lighten-2 center">{this.state.postStatus}</a>
-            </ul>
-        ) : (
-            <div></div>
-        )
+        
 
         return (
             <div className="row">
                 <div className="card">
                     <div className="card-content">
-                        {postStatusMessage}
                         <form onSubmit={this.handleSubmit}>
-                            <input placeholder="What are you thinking?..." value={this.state.text} id="text" type="text" className="validate" minLength="1" maxLength="300" onChange={this.handleChange} />
+                            <input placeholder="What are you thinking?..." value={this.state.text} id="text" type="text" className="validate" required maxLength="300" onChange={this.handleChange} />
                             <br />
                             <br />
                             <button className="waves-effect waves-light btn-small">Submit</button>

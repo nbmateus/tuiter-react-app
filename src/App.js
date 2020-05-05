@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 import Navbar from './components/Navbar';
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
-import Footer from './components/Footer';
+import ProfileSettings from './components/ProfileSettings';
 import Home from './components/Home';
 import ActivateAccount from './components/ActivateAccount';
 import EmailVerification from './components/EmailVerification';
@@ -27,15 +27,14 @@ class App extends React.Component {
 	componentDidMount() {
 		//M.AutoInit();
 		var dropdownxd = M.Dropdown.init(document.querySelector('#idDropdownTrigger'), {
-            coverTrigger: false,
+			coverTrigger: false,
 		})
 		M.Sidenav.init(document.querySelectorAll('.sidenav'), {});
 		if (Cookies.get('authtoken')) {
 			this.handleLogIn()
 		}
-		console.log("DROPDOWN INITIALIZED ", dropdownxd)
 	}
-	
+
 
 	handleLogOut() {
 		axios.post('http://nbmateus.pythonanywhere.com/accounts/logout/', {}, {
@@ -44,7 +43,6 @@ class App extends React.Component {
 			}
 		})
 			.then(response => {
-				console.log("CERRE SESION ", response)
 				Cookies.remove('authtoken');
 				this.setState({
 					userLoggedIn: false
@@ -52,17 +50,17 @@ class App extends React.Component {
 
 			})
 			.catch(error => {
-				console.log("ERROR ", error.response);
+
 			})
 
 	}
 
 	handleLogIn() {
-		console.log("SETEO STATE LOGGEDIN")
-		axios.get('http://nbmateus.pythonanywhere.com/accounts/user/',{
+		axios.get('http://nbmateus.pythonanywhere.com/accounts/user/', {
 			headers: {
 				Authorization: Cookies.get('authtoken')
-			}})
+			}
+		})
 			.then(response => {
 				this.setState({
 					userLoggedIn: true,
@@ -70,7 +68,7 @@ class App extends React.Component {
 				});
 			})
 			.catch(error => {
-				console.log(error.response);
+
 			})
 	}
 
@@ -79,13 +77,29 @@ class App extends React.Component {
 			<BrowserRouter>
 				<div className="App grey">
 					<Navbar loggedIn={this.state.userLoggedIn} currentUsername={this.state.username} appHandleLogOut={this.handleLogOut} />
-					<Route exact path='/' render={(props) => <Home {...props} loggedIn={this.state.userLoggedIn} />} />
+					<Route exact path='/' render={(props) => <Home {...props} loggedIn={this.state.userLoggedIn} loggedUsername={this.state.username} />} />
 					<Route exact path='/signup' component={SignUp} />
 					<Route exact path='/login' render={(props) => <SignIn {...props} handleLogIn={this.handleLogIn} />} />
 					<Route exact path='/account-verified' component={ActivateAccount} />
 					<Route exact path='/registration-complete' component={EmailVerification} />
-					<Route exact path='/profile/:profileUsername' render={(props) => <Profile {...props} loggedIn={this.state.userLoggedIn} loggedUsername={this.state.username} />} />
-					<Footer />
+					<Route exact path='/profile/:profileUsername' render={
+						(props) =>
+							<Profile
+								{...props}
+								loggedIn={this.state.userLoggedIn}
+								loggedUsername={this.state.username}
+							/>}
+					/>
+
+					<Route exact path='/settings/' render={ (props) => 
+					<ProfileSettings
+						{...props}
+						loggedUsername={this.state.username}
+					/>
+
+						 }
+					/>
+
 				</div>
 			</BrowserRouter>
 		);

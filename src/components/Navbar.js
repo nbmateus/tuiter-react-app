@@ -12,14 +12,6 @@ class Navbar extends React.Component {
         }
     }
 
-    componentDidMount() {
-        /*M.Dropdown.init(document.querySelector('#idDropdownTrigger'), {
-            coverTrigger: false,
-        });*/
-        //M.Sidenav.init(document.querySelectorAll('.sidenav'), {});
-        //M.AutoInit();
-    }
-
     componentDidUpdate() {
         M.Dropdown.init(document.querySelector('#idDropdownTrigger'), {
             coverTrigger: false,
@@ -32,70 +24,6 @@ class Navbar extends React.Component {
     }
 
     render() {
-        /*var navbarBtns = this.props.loggedIn ? (
-            <div>
-                <li>
-                    <a className="dropdown-trigger" href="#!" data-target="usernameDropdown">
-                        <i className="material-icons left">account_circle</i>
-                        {this.props.currentUsername}
-                        <i className="material-icons right">arrow_drop_down</i>
-                    </a>
-                </li>
-            </div>
-        ) : (
-                <div>
-                    <li className="sidenav-close"><NavLink to="/login">Log In</NavLink ></li >
-                    <li className="sidenav-close"><NavLink to="/signup">Sign Up</NavLink></li>
-                </div >
-            )
-
-        var sidenavBtns = this.props.loggedIn ? (
-            <div>
-                <li className="sidenav-close">
-                    <NavLink to={"/profile/" + this.props.currentUsername + "/"}>
-                        <i className="material-icons left">account_circle</i>
-                        {this.props.currentUsername}
-                    </NavLink>
-                </li>
-                <li className="divider"></li>
-                <li className="sidenav-close"><NavLink to="/" onClick={this.props.appHandleLogOut}>Log Out</NavLink></li>
-            </div>
-        ) : (
-                <div>
-                    <li className="sidenav-close"><NavLink to="/login">Log In</NavLink ></li >
-                    <li className="sidenav-close"><NavLink to="/signup">Sign Up</NavLink></li>
-                </div >
-            );
-
-
-        return (
-            <div>
-                <div className="navbar-fixed">
-                    <ul id="usernameDropdown" className="dropdown-content">
-                        <li><NavLink to={"/profile/" + this.props.currentUsername + "/"}>My Profile</NavLink></li>
-                        <li><NavLink to="/" onClick={this.props.appHandleLogOut}>Log Out</NavLink></li>
-                    </ul>
-                    <nav>
-                        <div className="nav-wrapper indigo">
-                            <div className="container">
-                                <ul className="left">
-                                    <NavLink to="/" className="brand-logo" >LOGO</NavLink>
-                                </ul>
-                                <a className="sidenav-trigger hide-on-larg" data-target="idSidenav">
-                                    <i className="material-icons">menu</i>
-                                </a>
-                                <ul className="right hide-on-med-and-down">
-                                    {navbarBtns}
-                                </ul>
-                            </div>
-                        </div>
-                    </nav>
-                </div>
-                <ul className="sidenav" id="idSidenav">
-                    {sidenavBtns}
-                </ul>
-            </div>
-        )*/
 
         var navdropdownbtn = this.state.userLoggedIn ? (
             <div>
@@ -124,6 +52,8 @@ class Navbar extends React.Component {
                     </NavLink>
                 </li>
                 <li className="divider"></li>
+                <li className="sidenav-close"><NavLink to="/" >Home</NavLink></li>
+                <li className="sidenav-close"><NavLink to="/settings" >Profile Settings</NavLink></li>
                 <li className="sidenav-close"><NavLink to="/" onClick={this.props.appHandleLogOut}>Log Out</NavLink></li>
 
             </div>
@@ -139,10 +69,13 @@ class Navbar extends React.Component {
                 <div className="navbar-fixed">
                     <ul id="dropdown1" className="dropdown-content">
                         <li><NavLink to={"/profile/" + this.props.currentUsername + "/"}>My Profile</NavLink></li>
+                        <li><NavLink to="/">Home</NavLink></li>
+                        <li><NavLink to="/settings">Profile Settings</NavLink></li>
+                        <li className="divider"></li>
                         <li><NavLink to="/" onClick={this.props.appHandleLogOut}>Log Out</NavLink></li>
                     </ul>
                     <nav>
-                        <div className="nav-wrapper indigo">
+                        <div className="nav-wrapper teal">
                             <div className="container">
                                 <ul className="left">
                                     <NavLink to="/" className="brand-logo" >LOGO</NavLink>
