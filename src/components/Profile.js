@@ -22,7 +22,15 @@ class Profile extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (prevProps.match.params.profileUsername !== this.props.match.params.profileUsername) {
-            this.getProfile()
+            this.setState({
+                profile: {},
+                profileDoesNotExist: false,
+                postList: [],
+                postListNextPage: null,
+                postListVisible: true,
+                postListLoaded: false,
+            },() => {this.getProfile()})
+            
         }
     }
 

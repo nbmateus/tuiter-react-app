@@ -8,6 +8,7 @@ import Home from './components/Home';
 import ActivateAccount from './components/ActivateAccount';
 import EmailVerification from './components/EmailVerification';
 import Profile from './components/Profile';
+import Search from './components/Search';
 import axios from 'axios';
 import { BrowserRouter, Route } from 'react-router-dom';
 import M from 'materialize-css/dist/js/materialize';
@@ -76,7 +77,7 @@ class App extends React.Component {
 		return (
 			<BrowserRouter>
 				<div className="App grey">
-					<Navbar loggedIn={this.state.userLoggedIn} currentUsername={this.state.username} appHandleLogOut={this.handleLogOut} />
+					<Route path='/' render={(props) => <Navbar {...props} loggedIn={this.state.userLoggedIn} currentUsername={this.state.username} appHandleLogOut={this.handleLogOut} />} />
 					<Route exact path='/' render={(props) => <Home {...props} loggedIn={this.state.userLoggedIn} loggedUsername={this.state.username} />} />
 					<Route exact path='/signup' component={SignUp} />
 					<Route exact path='/login' render={(props) => <SignIn {...props} handleLogIn={this.handleLogIn} />} />
@@ -91,14 +92,15 @@ class App extends React.Component {
 							/>}
 					/>
 
-					<Route exact path='/settings/' render={ (props) => 
-					<ProfileSettings
-						{...props}
-						loggedUsername={this.state.username}
-					/>
+					<Route exact path='/settings/' render={(props) =>
+						<ProfileSettings
+							{...props}
+							loggedUsername={this.state.username}
+						/>
 
-						 }
+					}
 					/>
+					<Route exact path='/search/:search_input' render={(props) => <Search {...props}/>}/>
 
 				</div>
 			</BrowserRouter>

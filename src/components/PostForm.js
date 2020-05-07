@@ -74,7 +74,7 @@ class PostForm extends React.Component {
                 <div className="card">
                     <div className="card-content">
                         <form onSubmit={this.handleSubmit}>
-                            <input placeholder="What are you thinking?..." value={this.state.text} id="text" type="text" className="validate" required maxLength="300" onChange={this.handleChange} />
+                            <input placeholder="What are you thinking?..." value={this.state.text} id="text" type="text"  required maxLength="300" onChange={this.handleChange} />
                             <br />
                             <br />
                             <button className="waves-effect waves-light btn-small">Submit</button>

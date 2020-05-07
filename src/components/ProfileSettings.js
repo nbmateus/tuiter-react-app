@@ -193,15 +193,15 @@ class ProfileSettings extends React.Component {
                         <h4>Profile Settings</h4>
                         {profileChangesStatusDiv}
                         <label htmlFor="fullname">Fullname</label>
-                        <input id="fullname" type="text" class="validate" maxLength="30" value={this.state.fullname} onChange={this.handleChange} />
+                        <input id="fullname" type="text" className="validate" maxLength="30" value={this.state.fullname} onChange={this.handleChange} />
                         <label htmlFor="description">Description</label>
-                        <input id="description" type="text" class="validate" maxLength="200" value={this.state.description} onChange={this.handleChange} />
+                        <input id="description" type="text" className="validate" maxLength="200" value={this.state.description} onChange={this.handleChange} />
                         <br />
                         <br />
                         <div className="switch">
                             <label>
                                 Public Profile
-                                <input type="checkbox" checked={this.state.isPrivate} onClick={this.handleSwitch} />
+                                <input type="checkbox" checked={this.state.isPrivate} onChange={this.handleSwitch} />
                                 <span className="lever"></span>
                                 Private Profile
                             </label>

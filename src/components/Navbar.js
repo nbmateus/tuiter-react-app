@@ -2,25 +2,86 @@ import React from 'react';
 import 'materialize-css/dist/css/materialize.css';
 import M from 'materialize-css/dist/js/materialize';
 import { NavLink } from 'react-router-dom'
+import axios from 'axios';
 
 
 class Navbar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            userLoggedIn: this.props.loggedIn
+            userLoggedIn: this.props.loggedIn,
+            autocompleteInstance: null,
+            searchBoxInput: "",
+            autocompleteData: {},
+
         }
+    }
+
+    componentDidMount(){
+        M.Dropdown.init(document.querySelector('#idDropdownTrigger'), {
+            coverTrigger: false,
+        });
+
+        M.Autocomplete.init(document.querySelector('#searchBoxInput'), {
+            data: {},
+            limit: 10,
+            onAutocomplete: () => {
+                this.props.history.push('/profile/' + document.querySelector('#searchBoxInput').value)
+                this.setState({
+                    searchBoxInput: ""
+                })
+            }
+        });   
     }
 
     componentDidUpdate() {
         M.Dropdown.init(document.querySelector('#idDropdownTrigger'), {
             coverTrigger: false,
-		})
+        })
+        
+        if (this.state.searchBoxInput === "") {
+            M.Autocomplete.init(document.querySelector('#searchBoxInput'), {
+                data: {},
+                limit: 10,
+                onAutocomplete: () => {
+                    this.props.history.push('/profile/' + document.querySelector('#searchBoxInput').value)
+                    this.setState({
+                        searchBoxInput: ""
+                    })
+                }
+            });
+        } else {
+            M.Autocomplete.getInstance(document.querySelector('#searchBoxInput')).updateData(this.state.autocompleteData);
+        }
+
         if (this.state.userLoggedIn !== this.props.loggedIn) {
             this.setState({
                 userLoggedIn: this.props.loggedIn
             })
         }
+    }
+
+    handleSearchInput = (e) => {
+        this.setState({
+            [e.target.id]: e.target.value
+        }, () => {
+            if (this.state.searchBoxInput !== "") {
+                axios.get('http://nbmateus.pythonanywhere.com/accounts/profile-list/?search=' + this.state.searchBoxInput)
+                    .then(response => {
+                        var autocompleteResults = {};
+                        for (var i = 0; i < response.data.results.length; i++) {
+                            autocompleteResults[response.data.results[i].user] = null;
+                        }
+                        this.setState({
+                            autocompleteData: autocompleteResults
+                        })
+
+                    })
+                    .catch(error => {
+
+                    })
+            }
+        })
     }
 
     render() {
@@ -36,12 +97,12 @@ class Navbar extends React.Component {
                 </li>
             </div>
         ) : (
-                <div>
+                <ul>
                     <li><NavLink to="/login">Log In</NavLink ></li >
                     <li><NavLink to="/signup">Sign Up</NavLink></li>
-                </div>
+                </ul>
             )
-        
+
 
         var sidenavdropdownbtn = this.state.userLoggedIn ? (
             <div>
@@ -53,7 +114,7 @@ class Navbar extends React.Component {
                 </li>
                 <li className="divider"></li>
                 <li className="sidenav-close"><NavLink to="/" >Home</NavLink></li>
-                <li className="sidenav-close"><NavLink to="/settings" >Profile Settings</NavLink></li>
+                <li className="sidenav-close"><NavLink to="/settings" >Settings</NavLink></li>
                 <li className="sidenav-close"><NavLink to="/" onClick={this.props.appHandleLogOut}>Log Out</NavLink></li>
 
             </div>
@@ -70,7 +131,7 @@ class Navbar extends React.Component {
                     <ul id="dropdown1" className="dropdown-content">
                         <li><NavLink to={"/profile/" + this.props.currentUsername + "/"}>My Profile</NavLink></li>
                         <li><NavLink to="/">Home</NavLink></li>
-                        <li><NavLink to="/settings">Profile Settings</NavLink></li>
+                        <li><NavLink to="/settings">Settings</NavLink></li>
                         <li className="divider"></li>
                         <li><NavLink to="/" onClick={this.props.appHandleLogOut}>Log Out</NavLink></li>
                     </ul>
@@ -84,8 +145,21 @@ class Navbar extends React.Component {
                                     <i className="material-icons">menu</i>
                                 </a>
                                 <ul className="right hide-on-med-and-down">
-
-                                    {navdropdownbtn}
+                                    <li>
+                                        <form onSubmit={(e)=>{
+                                            e.preventDefault();
+                                            this.props.history.push('/search/'+this.state.searchBoxInput)
+                                            }}>
+                                            <div className="input-field">
+                                                <input className="autocomplete" id="searchBoxInput" value={this.state.searchBoxInput} placeholder="Search users..." type="search" required onChange={this.handleSearchInput}/>
+                                                <label className="label-icon" htmlFor="searchBoxInput"><i className="material-icons">search</i></label>
+                                                <i className="material-icons" onClick={() => { this.setState({ searchBoxInput: "" }) }}>close</i>
+                                            </div>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        {navdropdownbtn}
+                                    </li>
                                 </ul>
                             </div>
                         </div>
