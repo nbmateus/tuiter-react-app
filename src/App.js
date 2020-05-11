@@ -27,7 +27,7 @@ class App extends React.Component {
 
 	componentDidMount() {
 		//M.AutoInit();
-		var dropdownxd = M.Dropdown.init(document.querySelector('#idDropdownTrigger'), {
+		M.Dropdown.init(document.querySelector('#idDropdownTrigger'), {
 			coverTrigger: false,
 		})
 		M.Sidenav.init(document.querySelectorAll('.sidenav'), {});
@@ -78,30 +78,31 @@ class App extends React.Component {
 			<BrowserRouter>
 				<div className="App grey">
 					<Route path='/' render={(props) => <Navbar {...props} loggedIn={this.state.userLoggedIn} currentUsername={this.state.username} appHandleLogOut={this.handleLogOut} />} />
-					<Route exact path='/' render={(props) => <Home {...props} loggedIn={this.state.userLoggedIn} loggedUsername={this.state.username} />} />
-					<Route exact path='/signup' component={SignUp} />
-					<Route exact path='/login' render={(props) => <SignIn {...props} handleLogIn={this.handleLogIn} />} />
-					<Route exact path='/account-verified' component={ActivateAccount} />
-					<Route exact path='/registration-complete' component={EmailVerification} />
-					<Route exact path='/profile/:profileUsername' render={
-						(props) =>
-							<Profile
-								{...props}
-								loggedIn={this.state.userLoggedIn}
-								loggedUsername={this.state.username}
-							/>}
-					/>
-
-					<Route exact path='/settings/' render={(props) =>
-						<ProfileSettings
-							{...props}
-							loggedUsername={this.state.username}
+					<div className="">
+						<Route exact path='/' render={(props) => <Home {...props} loggedIn={this.state.userLoggedIn} loggedUsername={this.state.username} />} />
+						<Route exact path='/signup' component={SignUp} />
+						<Route exact path='/login' render={(props) => <SignIn {...props} handleLogIn={this.handleLogIn} />} />
+						<Route exact path='/account-verified' component={ActivateAccount} />
+						<Route exact path='/registration-complete' component={EmailVerification} />
+						<Route exact path='/profile/:profileUsername' render={
+							(props) =>
+								<Profile
+									{...props}
+									loggedIn={this.state.userLoggedIn}
+									loggedUsername={this.state.username}
+								/>}
 						/>
 
-					}
-					/>
-					<Route exact path='/search/:search_input' render={(props) => <Search {...props}/>}/>
+						<Route exact path='/settings/' render={(props) =>
+							<ProfileSettings
+								{...props}
+								loggedUsername={this.state.username}
+							/>
 
+						}
+						/>
+						<Route exact path='/search/:search_input' render={(props) => <Search {...props} />} />
+					</div>
 				</div>
 			</BrowserRouter>
 		);

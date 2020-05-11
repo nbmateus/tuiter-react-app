@@ -1,6 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import Cookies from 'js-cookie'
+import default_pfp from '../assets/default_pfp.jpg'
 
 class ProfileSettings extends React.Component {
 
@@ -10,6 +11,8 @@ class ProfileSettings extends React.Component {
             username: props.loggedUsername,
             fullname: "",
             description: "",
+            profilePictureUrl: null,
+            profilePictureFile: null,
             isPrivate: false,
             old_password: "",
             new_password1: "",
@@ -17,6 +20,7 @@ class ProfileSettings extends React.Component {
             passwordChangeStatus: null,
             profileChangesStatus: null,
             passwordChangeError: "",
+            componentLoaded: false,
 
 
         }
@@ -42,8 +46,10 @@ class ProfileSettings extends React.Component {
             .then(response => {
                 this.setState({
                     fullname: response.data.fullname,
+                    profilePictureUrl: response.data.profilePicture,
                     description: response.data.description,
-                    isPrivate: response.data.isPrivate
+                    isPrivate: response.data.isPrivate,
+                    componentLoaded: true
                 })
             })
             .catch(error => {
@@ -63,37 +69,58 @@ class ProfileSettings extends React.Component {
         })
     }
 
+    handleImageUpload = (e) => {
+        if (e.target.files.length) {
+            this.setState({
+                profilePictureFile: e.target.files[0],
+                profilePictureUrl: URL.createObjectURL(e.target.files[0])
+            })
+        } else {
+            this.setState({
+                profilePictureFile: null,
+                profilePictureUrl: null
+            })
+        }
+    }
+
     handleSubmitProfileChanges = (e) => {
         e.preventDefault();
         this.setState({
-            profileChangesStatus:"loading"
+            profileChangesStatus: "loading"
         })
-        axios.put('http://nbmateus.pythonanywhere.com/accounts/profile/' + this.state.username + '/update/', {
-            fullname: this.state.fullname,
-            description: this.state.description,
-            isPrivate: this.state.isPrivate
-        }, {
+        this.sendProfileChanges()
+
+    }
+
+    sendProfileChanges() {
+        var form_data = new FormData();
+        if (this.state.profilePictureFile !== null) {
+            form_data.append('profilePicture', this.state.profilePictureFile, this.state.profilePictureFile.name);
+        }
+        form_data.append('fullname', this.state.fullname);
+        form_data.append('description', this.state.description);
+        form_data.append('isPrivate', this.state.isPrivate);
+
+        axios.put('http://nbmateus.pythonanywhere.com/accounts/profile/' + this.state.username + '/update/', form_data, {
             headers: {
                 Authorization: Cookies.get('authtoken')
             }
         })
             .then(response => {
-                console.log("profile updated")
                 this.setState({
-                    profileChangesStatus:"done",
-                    passwordChangeError:"",
+                    profileChangesStatus: "done",
+                    passwordChangeError: "",
                     passwordChangeStatus: null,
                 })
             })
             .catch(error => {
-                console.log("error")
             })
     }
 
     handleSubmitPasswordChange = (e) => {
         e.preventDefault();
         this.setState({
-            passwordChangeStatus:"loading"
+            passwordChangeStatus: "loading"
         })
         axios.post('http://nbmateus.pythonanywhere.com/accounts/password/change/', {
             old_password: this.state.old_password,
@@ -105,7 +132,6 @@ class ProfileSettings extends React.Component {
             }
         })
             .then(response => {
-                console.log("password changed")
                 this.setState({
                     old_password: "",
                     new_password1: "",
@@ -116,7 +142,6 @@ class ProfileSettings extends React.Component {
                 })
             })
             .catch(error => {
-                console.log("error")
                 var fieldError = "";
                 if (error.response.data.old_password) {
                     fieldError = "Old Password: " + error.response.data.old_password
@@ -136,7 +161,6 @@ class ProfileSettings extends React.Component {
     }
 
 
-
     render() {
 
         var profileChangesStatusDiv = <div></div>
@@ -154,7 +178,7 @@ class ProfileSettings extends React.Component {
             profileChangesStatusDiv = (
                 <div>
                     <h6 className="green-text">Profile Updated</h6>
-                    <br/>
+                    <br />
                 </div>
             )
         }
@@ -171,7 +195,7 @@ class ProfileSettings extends React.Component {
             passwordChangeStatusDiv = (
                 <div>
                     <h6 className="green-text">Password Changed</h6>
-                    <br/>
+                    <br />
                 </div>
             )
         }
@@ -179,19 +203,39 @@ class ProfileSettings extends React.Component {
             passwordChangeStatusDiv = (
                 <div>
                     <h6 className="red-text">{this.state.passwordChangeError}</h6>
-                    <br/>
+                    <br />
                 </div>
-                
+
             )
         }
 
+        var profilePictureElement = this.state.profilePictureUrl == null ? (
+            <img alt="" width="150" height="150" className="circle" src={default_pfp} />
+        ) : (
+            <img alt="" width="150" height="150" className="circle" src={this.state.profilePictureUrl} />
+        )
 
-        return (
-            <div className="container">
+
+
+        var componentView = !this.state.componentLoaded ? (
+            <div className="progress">
+                <div className="indeterminate"></div>
+            </div>
+        ) : (
                 <div className="card-panel grey lighten-4">
                     <form onSubmit={this.handleSubmitProfileChanges}>
                         <h4>Profile Settings</h4>
                         {profileChangesStatusDiv}
+                        {profilePictureElement}
+                        <div className="file-field input-field">
+                            <div className="waves-effect waves-light btn-small">
+                                <span>Profile Picture</span>
+                                <input type="file" onChange={this.handleImageUpload} />
+                            </div>
+                            <div className="file-path-wrapper">
+                                <input className="file-path validate" type="text" />
+                            </div>
+                        </div>
                         <label htmlFor="fullname">Fullname</label>
                         <input id="fullname" type="text" className="validate" maxLength="30" value={this.state.fullname} onChange={this.handleChange} />
                         <label htmlFor="description">Description</label>
@@ -230,9 +274,13 @@ class ProfileSettings extends React.Component {
                         <br />
                         <button className="waves-effect waves-light btn-small">Save Password Change</button>
                     </form>
-
-
                 </div>
+            )
+
+
+        return (
+            <div className="container">
+                {componentView}
             </div>
         )
     }

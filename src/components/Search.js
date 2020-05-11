@@ -78,15 +78,16 @@ class Search extends React.Component {
         if (this.state.componentLoaded) {
             if (this.state.searchResults.length) {
                 searchResultsDiv = (
-                    this.state.searchResults.map((result) => {
-                        return (
-                            <div>
-                                <ul className="collection">
+                    <div>
+                        <ul className="collection">
+                            {this.state.searchResults.map((result) => {
+                                return (
                                     <SearchResult key={result.id} {...this.props} result={result} />
-                                </ul>
-                            </div>
-                        )
-                    })
+                                )
+                            })}
+                        </ul>
+                    </div>
+                
                 )
             } else {
                 searchResultsDiv = (
@@ -99,7 +100,7 @@ class Search extends React.Component {
 
         return (
             <div className="container">
-                <div className="white-text center"><br/>{this.state.numberOfResults + " results."}</div>
+                <div className="white-text center"><br />{this.state.numberOfResults + " results."}</div>
                 {searchResultsDiv}
                 {loadMore}
             </div>

@@ -14,6 +14,7 @@ class PostDetail extends React.Component {
             post: this.props.post,
             comments: [],
             commentsNextPage: null,
+            iDidLikeThisPost: false,
         }
         this.updateCommentList = this.updateCommentList.bind(this)
         this.loadMoreComments = this.loadMoreComments.bind(this)
@@ -23,6 +24,23 @@ class PostDetail extends React.Component {
     componentDidMount() {
         M.Modal.init(document.querySelectorAll('.modal'), {})
         this.isRePost();
+        this.didILikeThisPost();
+    }
+
+    didILikeThisPost() {
+        axios.get('http://nbmateus.pythonanywhere.com/postings/did-i-like-post/' + this.state.post.id + '/', {
+            headers: {
+                Authorization: Cookies.get('authtoken')
+            }
+        })
+            .then(response => {
+                this.setState({
+                    iDidLikeThisPost: response.data.didILikePost
+                })
+            })
+            .catch(error => {
+
+            })
     }
 
     postHasImage(post) {
@@ -124,6 +142,44 @@ class PostDetail extends React.Component {
             })
     }
 
+    doLikePost(){
+        if(this.state.iDidLikeThisPost){
+            axios.delete('http://nbmateus.pythonanywhere.com/postings/post-detail/'+this.state.post.id+'/like/',{
+                headers: {
+                    Authorization: Cookies.get('authtoken')
+                }
+            })
+            .then(response => {
+                var postUpdated = this.state.post;
+                postUpdated.likesCount -= 1;
+                this.setState({
+                    iDidLikeThisPost: false,
+                    post: postUpdated
+                })
+            })
+            .catch(error => {
+                
+            })
+        }else{
+            axios.post('http://nbmateus.pythonanywhere.com/postings/post-detail/'+this.state.post.id+'/like/',{},{
+                headers: {
+                    Authorization: Cookies.get('authtoken')
+                }
+            })
+            .then(response => {
+                var postUpdated = this.state.post;
+                postUpdated.likesCount += 1;
+                this.setState({
+                    iDidLikeThisPost: true,
+                    post: postUpdated
+                })
+            })
+            .catch(error => {
+                
+            })
+        }
+    }
+
     render() {
 
         var deleteBtn = this.props.loggedUsername === this.state.post.user ? (
@@ -152,6 +208,18 @@ class PostDetail extends React.Component {
                 )
         }
 
+        var favButton = this.state.iDidLikeThisPost ? (
+            <i className="material-icons left red-text" onClick={(e) => {
+                e.preventDefault();
+                this.doLikePost();
+            }}>favorite</i>
+        ) : (
+                <i className="material-icons left" onClick={(e) => {
+                    e.preventDefault();
+                    this.doLikePost();
+                }}>favorite_border</i>
+            )
+
         return (
             <div className="card">
                 <div className="card-content">
@@ -166,13 +234,13 @@ class PostDetail extends React.Component {
                 <div className="card-action">
                     <div className="row">
                         <div className="col s4">
-                            <a className="black-text"><i className="material-icons modal-trigger" href={"#" + this.state.post.id + "comments"} onClick={() => this.getComments()}>chat_bubble_outline</i></a>
+                            <a href="/#" className="black-text"><i className="material-icons modal-trigger" href={"#" + this.state.post.id + "comments"} onClick={() => this.getComments()}>chat_bubble_outline</i></a>
                         </div>
                         <div className="col s4">
-                            <a className="black-text"><i className="material-icons left modal-trigger" href={"#modalRePost" + this.state.post.id}>repeat</i>{this.state.post.sharedCount}</a>
+                            <a href="/#" className="black-text"><i className="material-icons left modal-trigger" href={"#modalRePost" + this.state.post.id}>repeat</i>{this.state.post.sharedCount}</a>
                         </div>
                         <div className="col s4">
-                            <a className="black-text"><i className="material-icons left">favorite_border</i>{this.state.post.likesCount}</a>
+                            <a href="/#" className="black-text">{favButton}{this.state.post.likesCount}</a>
                         </div>
                     </div>
                 </div>

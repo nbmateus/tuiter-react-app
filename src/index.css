@@ -19,6 +19,14 @@ code {
     monospace;
 }
 
-input[type="search"] {
+#searchBoxInput{
   height: 64px !important; /* or height of nav */
 }
+
+#searchBoxInput2{
+  height: 55px !important; /* or height of nav */
+  width: 75% !important;
+ margin-left: 5% !important;
+}
+
+

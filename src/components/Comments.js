@@ -56,13 +56,13 @@ class Comments extends React.Component {
                 <div className="card-action">
                     <div className="row">
                         <div className="col s4">
-                            <a className="black-text"><i className="material-icons ">chat_bubble_outline</i></a>
+                            <a href="/#" className="black-text"><i className="material-icons ">chat_bubble_outline</i></a>
                         </div>
                         <div className="col s4">
-                            <a className="black-text"><i className="material-icons left">repeat</i>{this.state.post.sharedCount}</a>
+                            <a href="/#" className="black-text"><i className="material-icons left">repeat</i>{this.state.post.sharedCount}</a>
                         </div>
                         <div className="col s4">
-                            <a className="black-text"><i className="material-icons left">favorite_border</i>{this.state.post.likesCount}</a>
+                            <a href="/#" className="black-text"><i className="material-icons left">favorite_border</i>{this.state.post.likesCount}</a>
                         </div>
                     </div>
                 </div>

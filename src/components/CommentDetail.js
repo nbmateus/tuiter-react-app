@@ -29,10 +29,10 @@ class CommentDetail extends React.Component {
                 <div >
                     <div className="row">
                         <div className="col s6">
-                            <a className="black-text"><i className="material-icons left">repeat</i>{this.state.comment.sharedCount}</a>
+                            <a href="/#" className="black-text"><i className="material-icons left">repeat</i>{this.state.comment.sharedCount}</a>
                         </div>
                         <div className="col s6">
-                            <a className="black-text"><i className="material-icons left">favorite_border</i>{this.state.comment.likesCount}</a>
+                            <a href="/#" className="black-text"><i className="material-icons left">favorite_border</i>{this.state.comment.likesCount}</a>
                         </div>
                     </div>
                 </div>

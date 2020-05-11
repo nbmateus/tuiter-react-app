@@ -3,6 +3,7 @@ import axios from 'axios';
 import PostList from './PostList';
 import Cookies from 'js-cookie';
 import PostForm from './PostForm';
+import default_pfp from '../assets/default_pfp.jpg'
 
 class Profile extends React.Component {
     constructor(props) {
@@ -14,6 +15,7 @@ class Profile extends React.Component {
             postListNextPage: null,
             postListVisible: true,
             postListLoaded: false,
+            imFollowingThisUser: null,
 
         }
         this.updatePostList = this.updatePostList.bind(this)
@@ -21,7 +23,7 @@ class Profile extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.match.params.profileUsername !== this.props.match.params.profileUsername) {
+        if (prevProps.match.params.profileUsername !== this.props.match.params.profileUsername || prevProps.loggedUsername !== this.props.loggedUsername) {
             this.setState({
                 profile: {},
                 profileDoesNotExist: false,
@@ -29,8 +31,9 @@ class Profile extends React.Component {
                 postListNextPage: null,
                 postListVisible: true,
                 postListLoaded: false,
-            },() => {this.getProfile()})
-            
+                imFollowingThisUser: null
+
+            }, () => { this.getProfile() })
         }
     }
 
@@ -44,16 +47,38 @@ class Profile extends React.Component {
             .then(response => {
                 this.setState({
                     profile: response.data,
-                    profileDoesNotExist: false
+                    profileDoesNotExist: false,
+                    imFollowingThisUser: null,
                 }, () => {
                     window.scrollTo(0, 0)
                     this.getPostList();
+                    
+                    if (this.props.loggedUsername.length > 0 && this.state.profile.user !== this.props.loggedUsername) {
+                        this.amIFollowingThisUser();
+                    }
+
                 })
             })
             .catch(error => {
                 this.setState({
                     profileDoesNotExist: true
                 });
+            })
+    }
+
+    amIFollowingThisUser() {
+        axios.get('http://nbmateus.pythonanywhere.com/accounts/am-i-following-user/' + this.state.profile.user + '/', {
+            headers: {
+                Authorization: Cookies.get('authtoken')
+            }
+        })
+            .then(response => {
+                this.setState({
+                    imFollowingThisUser: response.data.amIFollowingUser
+                })
+            })
+            .catch(error => {
+
             })
     }
 
@@ -113,6 +138,44 @@ class Profile extends React.Component {
             })
     }
 
+    handleFollowBtn() {
+        if (this.state.imFollowingThisUser) {
+            axios.delete('http://nbmateus.pythonanywhere.com/accounts/profile/' + this.state.profile.user + '/follow/', {
+                headers: {
+                    Authorization: Cookies.get('authtoken')
+                }
+            })
+                .then(response => {
+                    var profileUpdated = this.state.profile;
+                    profileUpdated.followersCount -= 1;
+                    this.setState({
+                        imFollowingThisUser: false,
+                        profile: profileUpdated
+                    })
+                })
+                .catch(error => {
+
+                })
+        } else if (!this.state.imFollowingThisUser) {
+            axios.post('http://nbmateus.pythonanywhere.com/accounts/profile/' + this.state.profile.user + '/follow/', {}, {
+                headers: {
+                    Authorization: Cookies.get('authtoken')
+                }
+            })
+                .then(response => {
+                    var profileUpdated = this.state.profile;
+                    profileUpdated.followersCount += 1;
+                    this.setState({
+                        imFollowingThisUser: true,
+                        profile: profileUpdated
+                    })
+                })
+                .catch(error => {
+
+                })
+        }
+    }
+
 
     render() {
 
@@ -162,8 +225,20 @@ class Profile extends React.Component {
             )
         }
 
+        var profilePictureElement = !this.state.profileDoesNotExist && this.state.profile.profilePicture !== null ? (
+            <img alt="" height="150" width="150" className="circle" src={this.state.profile.profilePicture} />
+        ) : (
+                <img alt="" height="150" width="150" className="circle" src={default_pfp} />
+            )
 
-
+        var followBtn = <div></div>
+        if (this.state.imFollowingThisUser !== null && this.state.postListVisible) {
+            followBtn = this.state.imFollowingThisUser ? (
+                <div className="waves-effect waves-light btn grey lighten-2 black-text" onClick={() => this.handleFollowBtn()}>Unfollow</div>
+            ) : (
+                    <div className="waves-effect waves-light btn" onClick={() => this.handleFollowBtn()}>Follow</div>
+                )
+        }
 
 
         var profileview = this.state.profileDoesNotExist ? (
@@ -172,7 +247,7 @@ class Profile extends React.Component {
                     <div className="center">
                         <br />
                         <br />
-                        <img alt="" width="100" className="circle responsive-img" src="https://f0.pngfuel.com/png/178/595/black-profile-icon-illustration-user-profile-computer-icons-login-user-avatars-png-clip-art.png" />
+                        {profilePictureElement}
                         <br />
                         <br />
                         <span className="card-title">@{this.props.match.params.profileUsername}</span>
@@ -190,11 +265,12 @@ class Profile extends React.Component {
                         <div className="center">
                             <br />
                             <br />
-                            <img alt="" width="100" className="circle responsive-img" src="https://f0.pngfuel.com/png/178/595/black-profile-icon-illustration-user-profile-computer-icons-login-user-avatars-png-clip-art.png" />
+                            {profilePictureElement}
                             <br />
                             <span className="card-title"><h4>{this.state.profile.fullname}</h4></span>
 
                             <span className="card-title"><h5>@{this.state.profile.user}</h5></span>
+                            {followBtn}
                         </div>
                         <div className="card-content">
                             <span className="card-title">{this.state.profile.description}</span>
@@ -202,13 +278,13 @@ class Profile extends React.Component {
                         <div className="card-action">
                             <div className="row center">
                                 <div className="col s4">
-                                    <a href="#">Followers<br />{this.state.profile.followersCount}</a>
+                                    <a href="/#" >Followers<br />{this.state.profile.followersCount}</a>
                                 </div>
                                 <div className="col s4">
-                                    <a href="#">Following<br />{this.state.profile.followingCount}</a>
+                                    <a href="/#" >Following<br />{this.state.profile.followingCount}</a>
                                 </div>
                                 <div className="col s4">
-                                    <a href="#">Liked Posts</a>
+                                    <a href="/#" >Liked Posts</a>
                                 </div>
                             </div>
                         </div>
