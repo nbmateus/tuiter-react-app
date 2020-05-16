@@ -32,9 +32,14 @@ class ProfileSettings extends React.Component {
 
     componentDidUpdate() {
         if (this.props.loggedUsername !== this.state.username) {
-            this.setState({
-                username: this.props.loggedUsername
-            }, () => { this.getProfile() })
+            if (this.props.loggedUsername === "") {
+                this.props.history.push('/')
+            } else {
+                this.setState({
+                    username: this.props.loggedUsername
+                }, () => { this.getProfile() })
+            }
+
         }
     }
 
@@ -212,8 +217,8 @@ class ProfileSettings extends React.Component {
         var profilePictureElement = this.state.profilePictureUrl == null ? (
             <img alt="" width="150" height="150" className="circle" src={default_pfp} />
         ) : (
-            <img alt="" width="150" height="150" className="circle" src={this.state.profilePictureUrl} />
-        )
+                <img alt="" width="150" height="150" className="circle" src={this.state.profilePictureUrl} />
+            )
 
 
 
@@ -279,9 +284,7 @@ class ProfileSettings extends React.Component {
 
 
         return (
-            <div className="container">
-                {componentView}
-            </div>
+            componentView
         )
     }
 }

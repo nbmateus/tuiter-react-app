@@ -101,17 +101,17 @@ class Home extends React.Component {
             )
 
         var homeview = this.state.userLoggedIn && this.state.postList ? (
-            <div className="container grey">
+            <div className="grey">
                 <PostForm updatePostList={this.updatePostList} />
-                <div>
-                    <PostList
-                        postList={this.state.postList}
-                        loggedIn={this.props.loggedIn} 
-                        loggedUsername={this.props.loggedUsername} 
-                        updatePostList={this.updatePostList}
-                        deletePost={this.deletePost}
-                    />
-                </div>
+
+                <PostList
+                    postList={this.state.postList}
+                    loggedIn={this.props.loggedIn}
+                    loggedUsername={this.props.loggedUsername}
+                    updatePostList={this.updatePostList}
+                    deletePost={this.deletePost}
+                />
+
                 <br />
                 {loadMore}
                 <br />

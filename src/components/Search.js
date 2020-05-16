@@ -99,7 +99,7 @@ class Search extends React.Component {
         }
 
         return (
-            <div className="container">
+            <div>
                 <div className="white-text center"><br />{this.state.numberOfResults + " results."}</div>
                 {searchResultsDiv}
                 {loadMore}

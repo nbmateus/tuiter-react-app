@@ -242,7 +242,7 @@ class Profile extends React.Component {
 
 
         var profileview = this.state.profileDoesNotExist ? (
-            <div className="container">
+            <div className="grey">
                 <div className="card">
                     <div className="center">
                         <br />
@@ -260,7 +260,7 @@ class Profile extends React.Component {
             </div>
 
         ) : (
-                <div className="container grey">
+                <div className="grey">
                     <div className="card">
                         <div className="center">
                             <br />

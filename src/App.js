@@ -9,14 +9,15 @@ import ActivateAccount from './components/ActivateAccount';
 import EmailVerification from './components/EmailVerification';
 import Profile from './components/Profile';
 import Search from './components/Search';
+import Comments from './components/Comments'
 import axios from 'axios';
 import { BrowserRouter, Route } from 'react-router-dom';
 import M from 'materialize-css/dist/js/materialize';
 
 class App extends React.Component {
 
-	constructor() {
-		super()
+	constructor(props) {
+		super(props)
 		this.handleLogIn = this.handleLogIn.bind(this);
 		this.handleLogOut = this.handleLogOut.bind(this);
 		this.state = {
@@ -46,7 +47,8 @@ class App extends React.Component {
 			.then(response => {
 				Cookies.remove('authtoken');
 				this.setState({
-					userLoggedIn: false
+					userLoggedIn: false,
+					username: ""
 				});
 
 			})
@@ -74,11 +76,12 @@ class App extends React.Component {
 	}
 
 	render() {
+
 		return (
 			<BrowserRouter>
 				<div className="App grey">
 					<Route path='/' render={(props) => <Navbar {...props} loggedIn={this.state.userLoggedIn} currentUsername={this.state.username} appHandleLogOut={this.handleLogOut} />} />
-					<div className="">
+					<div className="container2">
 						<Route exact path='/' render={(props) => <Home {...props} loggedIn={this.state.userLoggedIn} loggedUsername={this.state.username} />} />
 						<Route exact path='/signup' component={SignUp} />
 						<Route exact path='/login' render={(props) => <SignIn {...props} handleLogIn={this.handleLogIn} />} />
@@ -102,8 +105,9 @@ class App extends React.Component {
 						}
 						/>
 						<Route exact path='/search/:search_input' render={(props) => <Search {...props} />} />
+						<Route exact path='/post-detail/:postId' render={(props) => <Comments {...props} loggedUsername={this.state.username}/>}/>
 					</div>
-				</div>
+				</div >
 			</BrowserRouter>
 		);
 	}

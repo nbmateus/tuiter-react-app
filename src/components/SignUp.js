@@ -23,12 +23,10 @@ class SignUp extends React.Component {
             password2: this.state.password2
         })
             .then(response => {
-                console.log("ME REGISTRE ", response.data)
                 this.props.history.push('/registration-complete')
 
             })
             .catch(error => {
-                console.log("ERROR: ", error.response.status, error.response.data);
                 var errors = error.response.data;
                 var formError = '';
                 if (errors.username) {
@@ -66,7 +64,6 @@ class SignUp extends React.Component {
             )
 
         return (
-            <div className="container">
                 <div className="card-panel grey lighten-4">
                     <span className="black-text">
                         <form onSubmit={this.handleSubmit}>
@@ -93,8 +90,6 @@ class SignUp extends React.Component {
                         </form>
                     </span>
                 </div>
-            </div>
-
         )
     }
 }

@@ -57,7 +57,6 @@ class SignIn extends React.Component {
             )
 
         return (
-            <div className="container">
                 <div className="card-panel grey lighten-4">
                     <span className="black-text">
                         <form onSubmit={this.handleSubmit}>
@@ -76,7 +75,6 @@ class SignIn extends React.Component {
                         </form>
                     </span>
                 </div>
-            </div>
         )
     }
 }

@@ -3,8 +3,8 @@ import axios from 'axios'
 import Cookies from 'js-cookie'
 import { Link } from 'react-router-dom';
 import M from 'materialize-css'
-import Comments from './Comments'
 import PostForm from './PostForm';
+import default_pfp from '../assets/default_pfp.jpg'
 
 class PostDetail extends React.Component {
 
@@ -12,19 +12,33 @@ class PostDetail extends React.Component {
         super(props)
         this.state = {
             post: this.props.post,
-            comments: [],
-            commentsNextPage: null,
             iDidLikeThisPost: false,
+            confirmDelete: false,
+            userProfilePicture: null,
         }
-        this.updateCommentList = this.updateCommentList.bind(this)
-        this.loadMoreComments = this.loadMoreComments.bind(this)
-        this.deleteComment = this.deleteComment.bind(this)
     }
 
     componentDidMount() {
         M.Modal.init(document.querySelectorAll('.modal'), {})
+        M.Materialbox.init(document.querySelectorAll('.materialboxed'), {});
         this.isRePost();
-        this.didILikeThisPost();
+        this.getUserprofilePicture();
+        if (this.props.loggedUsername !== "") {
+            this.didILikeThisPost();
+        }
+
+    }
+
+    getUserprofilePicture() {
+        axios.get('http://nbmateus.pythonanywhere.com/accounts/profile/' + this.state.post.user + '/')
+            .then(response => {
+                this.setState({
+                    userProfilePicture: response.data.profilePicture
+                })
+            })
+            .catch(error => {
+
+            })
     }
 
     didILikeThisPost() {
@@ -44,12 +58,15 @@ class PostDetail extends React.Component {
     }
 
     postHasImage(post) {
-        if (post.image != null) {
+        if (post.image !== null) {
             return (
                 <div className="card-image waves-effect waves-block waves-light">
+                    <div className="card-content container">
+                        <img alt="" src={post.image} />
+                    </div>
                     <br />
-                    <img alt="" src={this.state.post.image} />
-                </div>)
+                </div>
+            )
         }
         else {
             return (<div></div>)
@@ -60,13 +77,13 @@ class PostDetail extends React.Component {
 
 
     formatDate(date) {
-        var options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false, };
+        var options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true, };
         return new Date(date).toLocaleDateString([], options);
     }
 
     isRePost() {
         var completePost = this.state.post;
-        if (this.state.post.rePost != null) {
+        if (this.state.post.rePost !== null) {
             axios.get('http://nbmateus.pythonanywhere.com/postings/post-detail/' + this.state.post.rePost + '/', {
                 headers: {
                     Authorization: Cookies.get('authtoken')
@@ -88,109 +105,85 @@ class PostDetail extends React.Component {
 
     }
 
-    getComments() {
-        console.log("getComments")
-        axios.get(this.state.post.comments, {
-            headers: {
-                Authorization: Cookies.get('authtoken')
-            }
-        })
-            .then(response => {
-                console.log("RESPONSE ", response.data)
-                this.setState({
-                    comments: response.data.results,
-                    commentsNextPage: response.data.next
-                })
-            })
-            .catch(error => {
-
-            })
-    }
-
-    updateCommentList() {
-        this.getComments()
-    }
-
-    deleteComment(commentId) {
-        axios.delete('http://nbmateus.pythonanywhere.com/postings/post-detail/' + commentId + '/', {
-            headers: {
-                Authorization: Cookies.get('authtoken')
-            }
-        })
-            .then(response => {
-                this.updateCommentList()
-            })
-            .catch(error => {
-
-            })
-    }
-
-    loadMoreComments() {
-        axios.get(this.state.commentsNextPage, {
-            headers: {
-                Authorization: Cookies.get('authtoken')
-            }
-        })
-            .then(response => {
-                this.setState({
-                    comments: [...this.state.comments, ...response.data.results],
-                    commentsNextPage: response.data.next
-                })
-            })
-            .catch(error => {
-
-            })
-    }
-
-    doLikePost(){
-        if(this.state.iDidLikeThisPost){
-            axios.delete('http://nbmateus.pythonanywhere.com/postings/post-detail/'+this.state.post.id+'/like/',{
+    doLikePost() {
+        if (this.state.iDidLikeThisPost) {
+            axios.delete('http://nbmateus.pythonanywhere.com/postings/post-detail/' + this.state.post.id + '/like/', {
                 headers: {
                     Authorization: Cookies.get('authtoken')
                 }
             })
-            .then(response => {
-                var postUpdated = this.state.post;
-                postUpdated.likesCount -= 1;
-                this.setState({
-                    iDidLikeThisPost: false,
-                    post: postUpdated
+                .then(response => {
+                    var postUpdated = this.state.post;
+                    postUpdated.likesCount -= 1;
+                    this.setState({
+                        iDidLikeThisPost: false,
+                        post: postUpdated
+                    })
                 })
-            })
-            .catch(error => {
-                
-            })
-        }else{
-            axios.post('http://nbmateus.pythonanywhere.com/postings/post-detail/'+this.state.post.id+'/like/',{},{
+                .catch(error => {
+
+                })
+        } else {
+            axios.post('http://nbmateus.pythonanywhere.com/postings/post-detail/' + this.state.post.id + '/like/', {}, {
                 headers: {
                     Authorization: Cookies.get('authtoken')
                 }
             })
-            .then(response => {
-                var postUpdated = this.state.post;
-                postUpdated.likesCount += 1;
-                this.setState({
-                    iDidLikeThisPost: true,
-                    post: postUpdated
+                .then(response => {
+                    var postUpdated = this.state.post;
+                    postUpdated.likesCount += 1;
+                    this.setState({
+                        iDidLikeThisPost: true,
+                        post: postUpdated
+                    })
                 })
-            })
-            .catch(error => {
-                
-            })
+                .catch(error => {
+
+                })
         }
+    }
+
+    confirmDeletePost() {
+        this.setState({
+            confirmDelete: true
+        }, () => {
+            M.Tooltip.init(document.querySelector('#delPostTooltip' + this.state.post.id), {});
+            M.Tooltip.getInstance(document.querySelector('#delPostTooltip' + this.state.post.id)).open();
+        })
     }
 
     render() {
 
-        var deleteBtn = this.props.loggedUsername === this.state.post.user ? (
-            <i className="material-icons modal-trigger" href={"#" + this.state.post.id + "deletePost"}>delete</i>
-        ) : (
-                <i></i>
-            )
+        var deleteBtn = <div></div>
+        if (this.props.loggedUsername === this.state.post.user) {
+            deleteBtn = this.state.confirmDelete ? (
+                <div className="right">
+                    <a href="/#" className="red-text">
+                        <i id={'delPostTooltip' + this.state.post.id} className="tooltipped right material-icons" data-position="top" data-tooltip="Click it again to delete this post" onClick={(e) => {
+                            e.preventDefault();
+                            M.Tooltip.getInstance(document.querySelector('#delPostTooltip' + this.state.post.id)).close();
+                            this.props.deletePost(this.state.post.id)
+                        }}>delete</i>
+                    </a>
+                    <br />
+                </div>
+            ) : (
+                    <div className="right">
+                        <a href="/#" className="grey-text">
+                            <i className="right material-icons" onClick={(e) => {
+                                e.preventDefault();
+                                this.confirmDeletePost()
+                            }}>delete</i>
+                        </a>
+                        <br />
+                    </div>
+                )
+        }
+
 
         var rePostDiv = <div></div>
 
-        if (this.state.post.rePost != null) {
+        if (this.state.post.rePost !== null) {
             rePostDiv = this.state.post.rePost === "private_post" ? (
                 <div className="card grey">
                     <div className="card-content">
@@ -200,86 +193,77 @@ class PostDetail extends React.Component {
             ) : (
                     <div className="card">
                         <div className="card-content">
-                            <Link to={"/profile/" + this.state.post.rePost.user}><span className="card-title grey-text text-darken-4">@{this.state.post.rePost.user}</span></Link>
+                            <Link to={"/profile/" + this.state.post.rePost.user}><span className="card-title grey-text text-darken-4"><b>@{this.state.post.rePost.user}</b></span></Link>
                             <p>{this.state.post.rePost.text}</p>
-                            {this.postHasImage(this.state.post)}
+                            {this.postHasImage(this.state.post.rePost)}
                         </div>
                     </div>
                 )
         }
 
         var favButton = this.state.iDidLikeThisPost ? (
-            <i className="material-icons left red-text" onClick={(e) => {
-                e.preventDefault();
-                this.doLikePost();
+            <i className="material-icons left red-text" onClick={() => {
+                if (this.props.loggedUsername !== "") {
+                    this.doLikePost();
+                }
+
             }}>favorite</i>
         ) : (
-                <i className="material-icons left" onClick={(e) => {
-                    e.preventDefault();
-                    this.doLikePost();
+                <i className="material-icons left" onClick={() => {
+                    if (this.props.loggedUsername !== "") {
+                        this.doLikePost();
+                    }
                 }}>favorite_border</i>
+            )
+
+        var repostBtn = this.props.loggedUsername !== "" ? (
+            <i className="material-icons left modal-trigger" href={"#modalRePost" + this.state.post.id}>repeat</i>
+        ) : (
+                <i className="material-icons left">repeat</i>
+            )
+
+        var userPfpElement = this.state.userProfilePicture !== null ? (
+            <img alt="" width="50" height="50" className="circle" src={this.state.userProfilePicture} />
+        ) : (
+                <img alt="" width="50" height="50" className="circle" src={default_pfp} />
             )
 
         return (
             <div className="card">
                 <div className="card-content">
-                    <p className="grey-text right">
-                        {this.formatDate(this.state.post.timestamp)} {deleteBtn}
-                    </p>
-                    <Link to={"/profile/" + this.state.post.user}><span className="card-title grey-text text-darken-4">@{this.state.post.user}</span></Link>
+                    <div className="row ">
+                        <div className="col s11">
+                            <Link to={"/profile/" + this.state.post.user}>
+                                <b className=" grey-text text-darken-4"><h5 className="valign-wrapper">{userPfpElement}&nbsp;&nbsp;{"@"+this.state.post.user}</h5></b>
+                            </Link>
+                        </div>
+                        <div className="col s1">
+                            {deleteBtn}
+                        </div>
+                    </div>
                     <div>{this.state.post.text}</div>
                     {this.postHasImage(this.state.post)}
                     {rePostDiv}
+                    <br />
+                    <p className="grey-text right">
+                        {this.formatDate(this.state.post.timestamp)}
+                    </p>
                 </div>
                 <div className="card-action">
                     <div className="row">
                         <div className="col s4">
-                            <a href="/#" className="black-text"><i className="material-icons modal-trigger" href={"#" + this.state.post.id + "comments"} onClick={() => this.getComments()}>chat_bubble_outline</i></a>
+                            <Link to={"/post-detail/" + this.state.post.id} className="black-text"><i className="material-icons">chat_bubble_outline</i></Link>
                         </div>
                         <div className="col s4">
-                            <a href="/#" className="black-text"><i className="material-icons left modal-trigger" href={"#modalRePost" + this.state.post.id}>repeat</i>{this.state.post.sharedCount}</a>
+                            <a href="/#" className="black-text" onClick={(e) => e.preventDefault()}>{repostBtn}{this.state.post.sharedCount}</a>
                         </div>
                         <div className="col s4">
-                            <a href="/#" className="black-text">{favButton}{this.state.post.likesCount}</a>
+                            <a href="/#" className="black-text" onClick={(e) => e.preventDefault()}>{favButton}{this.state.post.likesCount}</a>
                         </div>
                     </div>
                 </div>
-                <Comments
-                    post={this.state.post}
-                    comments={this.state.comments}
-                    updateCommentList={this.updateCommentList}
-                    moreCommentsAvailable={this.state.commentsNextPage != null}
-                    loadMoreComments={this.loadMoreComments}
-                    deleteComment={this.deleteComment}
-                    loggedUsername={this.props.loggedUsername}
-                />
                 <div id={"modalRePost" + this.state.post.id} className="modal">
-                    <PostForm rePost={this.state.post.id} updatePostList={() => { return null }} />
-                    <div className="card-content">
-                        <p className="grey-text right">
-                            {this.formatDate(this.state.post.timestamp)}
-                        </p>
-                        <span className="card-title grey-text text-darken-4">@{this.state.post.user}</span>
-                        <p>{this.state.post.text}</p>
-                        {this.postHasImage(this.state.post)}
-                        {rePostDiv}
-                    </div>
-                </div>
-                <div id={this.state.post.id + "deletePost"} className="modal">
-                    <div className="modal-content center">
-                        <h4>Are you sure that you want to delete this post?</h4>
-                    </div>
-                    <div className="modal-footer">
-                        <div className="row">
-                            <div className="col s6 center">
-                                <button className="modal-close waves-effect waves-light btn" onClick={() => { this.props.deletePost(this.state.post.id) }}>Yes</button>
-                            </div>
-                            <div className="col s6 center">
-                                <button className="modal-close waves-effect waves-light btn">No</button>
-                            </div>
-                        </div>
-                    </div>
-                    <br />
+                    <PostForm rePost={this.state.post} updatePostList={() => { return null }} />
                 </div>
             </div>
 

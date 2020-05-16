@@ -58,6 +58,7 @@ class Navbar extends React.Component {
                     limit: 10,
                     onAutocomplete: () => {
                         this.props.history.push('/profile/' + document.querySelector('#searchBoxInput2').value)
+                        this.toggleMobileSearchBar();
                         this.setState({
                             searchBoxInput: ""
                         })
@@ -136,9 +137,20 @@ class Navbar extends React.Component {
                     {this.props.currentUsername}
                     <i className="material-icons right">arrow_drop_down</i>
                 </a>
+                <ul id="dropdown1" className="dropdown-content">
+                        <li><NavLink to={"/profile/" + this.props.currentUsername + "/"}>My Profile</NavLink></li>
+                        <li><NavLink to="/">Home</NavLink></li>
+                        <li><NavLink to="/settings">Settings</NavLink></li>
+                        <li className="divider"></li>
+                        <li><a href="/#" onClick={(e) => {
+                            e.preventDefault()
+                            this.props.appHandleLogOut()
+                        }}>Log Out</a></li>
+                    </ul>
             </li>
         ) : (
                 <React.Fragment>
+                    <li><NavLink to="/" >Home</NavLink></li>
                     <li><NavLink to="/login">Log In</NavLink ></li >
                     <li><NavLink to="/signup">Sign Up</NavLink></li>
                 </React.Fragment>
@@ -156,11 +168,15 @@ class Navbar extends React.Component {
                 <li className="divider"></li>
                 <li className="sidenav-close"><NavLink to="/" >Home</NavLink></li>
                 <li className="sidenav-close"><NavLink to="/settings" >Settings</NavLink></li>
-                <li className="sidenav-close"><NavLink to="/" onClick={this.props.appHandleLogOut}>Log Out</NavLink></li>
+                <li className="sidenav-close"><a href="/#" onClick={(e) => {
+                    e.preventDefault();
+                    this.props.appHandleLogOut();
+                }}>Log Out</a></li>
 
             </div>
         ) : (
                 <div>
+                    <li className="sidenav-close"><NavLink to="/" >Home</NavLink></li>
                     <li className="sidenav-close"><NavLink to="/login">Log In</NavLink ></li >
                     <li className="sidenav-close"><NavLink to="/signup">Sign Up</NavLink></li>
                 </div>
@@ -204,23 +220,16 @@ class Navbar extends React.Component {
         return (
             <div>
                 <div className="navbar-fixed">
-                    <ul id="dropdown1" className="dropdown-content">
-                        <li><NavLink to={"/profile/" + this.props.currentUsername + "/"}>My Profile</NavLink></li>
-                        <li><NavLink to="/">Home</NavLink></li>
-                        <li><NavLink to="/settings">Settings</NavLink></li>
-                        <li className="divider"></li>
-                        <li><NavLink to="/" onClick={this.props.appHandleLogOut}>Log Out</NavLink></li>
-                    </ul>
                     <nav>
                         <div className="nav-wrapper teal">
-                            <div className="container">
+                            <div className="container2">
                                 <ul className="left">
-                                    <NavLink to="/" className="brand-logo" >LOGO</NavLink>
+                                    <NavLink to="/" className="brand-logo" >Tuiter</NavLink>
                                 </ul>
                                 <a href="/#" className="sidenav-trigger hide-on-larg" data-target="idSidenav">
                                     <i className="material-icons">menu</i>
                                 </a>
-                                <ul className="hide-on-large-only right">
+                                <ul className="hide-on-large-only right" style={{ paddingRight: "20px" }}>
                                     <i className="material-icons" onClick={() => {
                                         this.toggleMobileSearchBar()
                                     }}>search</i>
