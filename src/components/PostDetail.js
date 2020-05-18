@@ -78,7 +78,7 @@ class PostDetail extends React.Component {
 
     formatDate(date) {
         var options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true, };
-        return new Date(date).toLocaleDateString([], options);
+        return new Date(date).toLocaleDateString('en-US', options);
     }
 
     isRePost() {
@@ -185,7 +185,7 @@ class PostDetail extends React.Component {
 
         if (this.state.post.rePost !== null) {
             rePostDiv = this.state.post.rePost === "private_post" ? (
-                <div className="card grey">
+                <div className="card grey darken-3">
                     <div className="card-content">
                         <p className="white-text"><i className="material-icons">https</i> This shared content is not visible for you because it belongs to a private profile.</p>
                     </div>

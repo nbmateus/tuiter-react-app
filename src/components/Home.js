@@ -3,6 +3,7 @@ import PostList from './PostList'
 import PostForm from './PostForm'
 import axios from 'axios'
 import Cookies from 'js-cookie'
+import home_png from '../assets/home.png'
 
 class Home extends React.Component {
     constructor(props) {
@@ -101,7 +102,7 @@ class Home extends React.Component {
             )
 
         var homeview = this.state.userLoggedIn && this.state.postList ? (
-            <div className="grey">
+            <div className="grey darken-3">
                 <PostForm updatePostList={this.updatePostList} />
 
                 <PostList
@@ -117,7 +118,16 @@ class Home extends React.Component {
                 <br />
             </div>
         ) : (
-                <div>about the app</div>
+                <div className="grey darken-3 white-text valign-wrapper" style={{ minHeight: "calc(100vh - 64px)" }}>
+                    <div className="row">
+                        <div className="col s12">
+                            <br/>
+                            <h5 className="center">Share your thoughts and photos with your followers.</h5>
+                            <br/>
+                            <img alt="" className="responsive-img" src={home_png}/>
+                        </div>
+                    </div>
+                </div>
             )
         return (homeview)
     }

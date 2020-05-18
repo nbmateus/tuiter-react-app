@@ -227,7 +227,7 @@ class ProfileSettings extends React.Component {
                 <div className="indeterminate"></div>
             </div>
         ) : (
-                <div className="card-panel grey lighten-4">
+                <div className="card-panel">
                     <form onSubmit={this.handleSubmitProfileChanges}>
                         <h4>Profile Settings</h4>
                         {profileChangesStatusDiv}

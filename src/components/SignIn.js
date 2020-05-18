@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { Link } from 'react-router-dom'
 
 
 class SignIn extends React.Component {
@@ -22,6 +23,9 @@ class SignIn extends React.Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
+        this.setState({
+            formError: "loading"
+        })
         const data = this.state.formUsername.includes('@') ? (
             { email: this.state.formUsername, password: this.state.formPassword }
         ) : (
@@ -48,33 +52,45 @@ class SignIn extends React.Component {
 
     render() {
 
-        const error = this.state.formError.length ? (
-            <ul className="collection container">
-                <a href="#!" className="collection-item active red lighten-2 center">{this.state.formError}</a>
-            </ul>
-        ) : (
-                <br />
-            )
+        var errorElement = <br />
+        if (this.state.formError !== "") {
+            errorElement = this.state.formError === "loading" ? (
+                <div>
+                    <div className="progress">
+                        <div className="indeterminate"></div>
+                    </div>
+                    <br />
+                </div>
+            ) : (
+                    <div>
+                        <h6 className="red-text">{this.state.formError}</h6 >
+                        <br />
+                    </div >
+                )
+        }
 
         return (
-                <div className="card-panel grey lighten-4">
-                    <span className="black-text">
-                        <form onSubmit={this.handleSubmit}>
-                            {error}
-                            <div className="input-field col s6">
-                                <input id="formUsername" type="text" className="validate" onChange={this.handleChange} required />
-                                <label htmlFor="formUsername">Username or Email</label>
-                            </div>
-                            <div className="input-field col s6">
-                                <input id="formPassword" type="password" className="validate" onChange={this.handleChange} required />
-                                <label htmlFor="formPassword">Password</label>
-                            </div>
-                            <br />
-                            <br />
-                            <button className="waves-effect waves-light btn-small">Log In</button>
-                        </form>
-                    </span>
-                </div>
+            <div className="card-panel">
+                <span className="black-text">
+                    <h5 className="center">Log In</h5>
+                    <form onSubmit={this.handleSubmit}>
+                        {errorElement}
+                        <div className="input-field col s6">
+                            <input id="formUsername" type="text" className="validate" onChange={this.handleChange} required />
+                            <label htmlFor="formUsername">Username or Email</label>
+                        </div>
+                        <div className="input-field col s6">
+                            <input id="formPassword" type="password" className="validate" onChange={this.handleChange} required />
+                            <label htmlFor="formPassword">Password</label>
+                        </div>
+                        <div className="center">
+                            <Link to="/password-recovery">Forgot Password?</Link>
+                        </div>
+                        <br />
+                        <button className="waves-effect waves-light btn-small" style={{ width: "100%" }}>Log In</button>
+                    </form>
+                </span>
+            </div>
         )
     }
 }

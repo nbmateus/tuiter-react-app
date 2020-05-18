@@ -32,7 +32,7 @@ class Comments extends React.Component {
 
     formatDate(date) {
         var options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true, };
-        return new Date(date).toLocaleDateString([], options);
+        return new Date(date).toLocaleDateString('en-US', options);
     }
 
     getPost() {
@@ -135,7 +135,7 @@ class Comments extends React.Component {
             )
 
         var componentView = this.state.componentLoaded ? (
-            <div className="grey">
+            <div className="grey darken-3">
                 <PostDetail
                     post={this.state.post}
                     loggedIn={this.props.loggedUsername !== ""}

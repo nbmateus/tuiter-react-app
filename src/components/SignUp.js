@@ -11,11 +11,15 @@ class SignUp extends React.Component {
             password1: "",
             password2: "",
             formError: "",
+            signUpSuccess: false,
         }
     }
 
     handleSubmit = (e) => {
         e.preventDefault();
+        this.setState({
+            formError: "loading"
+        })
         axios.post('http://nbmateus.pythonanywhere.com/accounts/registration/', {
             username: this.state.username,
             email: this.state.email,
@@ -23,7 +27,9 @@ class SignUp extends React.Component {
             password2: this.state.password2
         })
             .then(response => {
-                this.props.history.push('/registration-complete')
+                this.setState({
+                    signUpSuccess: true,
+                })
 
             })
             .catch(error => {
@@ -38,7 +44,7 @@ class SignUp extends React.Component {
                 } else if (errors.non_field_errors) {
                     formError = "Passwords don't match."
                 } else {
-                    formError = 'idk what is going on, lol'
+                    formError = error.response.statusText
                 }
                 this.setState({
                     formError: formError
@@ -55,19 +61,37 @@ class SignUp extends React.Component {
     }
 
     render() {
-        const error = this.state.formError.length ? (
-            <ul className="collection container">
-                <a href="#!" className="collection-item active red lighten-2 center">{this.state.formError}</a>
-            </ul>
-        ) : (
-                <br />
-            )
+        var errorElement = <br />
+        if (this.state.formError !== "") {
+            errorElement = this.state.formError === "loading" ? (
+                <div>
+                    <div className="progress">
+                        <div className="indeterminate"></div>
+                    </div>
+                    <br />
+                </div>
+            ) : (
+                    <div>
+                        <h6 className="red-text">{this.state.formError}</h6 >
+                        <br />
+                    </div >
+                )
+        }
 
-        return (
-                <div className="card-panel grey lighten-4">
+
+        var signUpView = this.state.signUpSuccess ? (
+            <div className="card-panel grey darken-3 ">
+                <span className="white-text">
+                    <h5 className="center">Check your email!</h5>
+                    <h6 className="center">An email has been sent to <b>{this.state.email}</b> to activate your account.</h6>
+                </span>
+            </div>
+        ) : (
+                <div className="card-panel">
                     <span className="black-text">
+                        <h5 className="center">Sign Up</h5>
                         <form onSubmit={this.handleSubmit}>
-                            {error}
+                            {errorElement}
                             <div className="input-field col s6">
                                 <input id="username" type="text" className="validate" onChange={this.handleChange} required />
                                 <label htmlFor="username">Username</label>
@@ -85,12 +109,13 @@ class SignUp extends React.Component {
                                 <label htmlFor="password2">Confirm Password</label>
                             </div>
                             <br />
-                            <br />
-                            <button className="waves-effect waves-light btn-small">Sign Up</button>
+                            <button className="waves-effect waves-light btn-small" style={{ width: "100%" }}>Sign Up</button>
                         </form>
                     </span>
                 </div>
-        )
+            )
+
+        return signUpView
     }
 }
 
