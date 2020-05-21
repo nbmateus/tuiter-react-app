@@ -14,6 +14,8 @@ class Home extends React.Component {
             postList: [],
             postListNextPage: null,
             listLoaded: false,
+            componentLoaded: false,
+            loadingNextPage: false,
 
         }
         this.updatePostList = this.updatePostList.bind(this)
@@ -21,8 +23,13 @@ class Home extends React.Component {
     }
 
     componentDidMount() {
-        if (this.state.userLoggedIn) {
+        window.scrollTo(0, 0)
+        if (this.props.loggedIn) {
             this.getPostList()
+        } else if (!this.state.componentLoaded) {
+            this.setState({
+                componentLoaded: true
+            })
         }
     }
 
@@ -39,6 +46,9 @@ class Home extends React.Component {
     }
 
     loadNextPage() {
+        this.setState({
+            loadingNextPage: true
+        })
         axios.get(this.state.postListNextPage, {
             headers: {
                 Authorization: Cookies.get('authtoken')
@@ -47,7 +57,8 @@ class Home extends React.Component {
             .then(response => {
                 this.setState({
                     postListNextPage: response.data.next,
-                    postList: [...this.state.postList, ...response.data.results]
+                    postList: [...this.state.postList, ...response.data.results],
+                    loadingNextPage: false
                 })
             })
             .catch(error => {
@@ -65,7 +76,8 @@ class Home extends React.Component {
                 this.setState({
                     postList: response.data.results,
                     postListNextPage: response.data.next,
-                    listLoaded: true
+                    listLoaded: true,
+                    componentLoaded: true,
                 })
             })
             .catch(error => {
@@ -93,13 +105,18 @@ class Home extends React.Component {
     }
 
     render() {
-        var loadMore = this.state.postListNextPage == null ? (
-            <div></div>
-        ) : (
-                <div className="center">
-                    <button className="waves-effect waves-light btn-small" onClick={() => this.loadNextPage()}>Load More</button>
+        var loadMore = <div></div>
+        if (this.state.postListNextPage !== null) {
+            loadMore = this.state.loadingNextPage ? (
+                <div className="progress">
+                    <div className="indeterminate"></div>
                 </div>
-            )
+            ) : (
+                    <div className="center">
+                        <button className="waves-effect waves-light btn-small" onClick={() => this.loadNextPage()}>Load More</button >
+                    </div >
+                )
+        }
 
         var homeview = this.state.userLoggedIn && this.state.postList ? (
             <div className="grey darken-3">
@@ -118,18 +135,29 @@ class Home extends React.Component {
                 <br />
             </div>
         ) : (
-                <div className="grey darken-3 white-text valign-wrapper" style={{ minHeight: "calc(100vh - 64px)" }}>
+                <div className="grey darken-3 white-text">
                     <div className="row">
                         <div className="col s12">
-                            <br/>
+                            <br />
                             <h5 className="center">Share your thoughts and photos with your followers.</h5>
-                            <br/>
-                            <img alt="" className="responsive-img" src={home_png}/>
+                            <br />
+                            <img alt="" className="responsive-img" src={home_png} />
                         </div>
                     </div>
                 </div>
             )
-        return (homeview)
+
+        var componentView = this.state.componentLoaded ? (
+            homeview
+        ): (
+                <div className = "grey darken-3 white-text" style = {{ minHeight: "calc(100vh - 64px)" }}>
+                    <div className="progress">
+                        <div className="indeterminate"></div>
+                    </div>
+        </div >
+            )
+
+return (componentView)
     }
 
 }

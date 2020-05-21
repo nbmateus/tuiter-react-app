@@ -27,6 +27,7 @@ class ProfileSettings extends React.Component {
     }
 
     componentDidMount() {
+        window.scrollTo(0, 0)
         this.getProfile()
     }
 
@@ -238,7 +239,7 @@ class ProfileSettings extends React.Component {
                                 <input type="file" onChange={this.handleImageUpload} />
                             </div>
                             <div className="file-path-wrapper">
-                                <input className="file-path validate" type="text" />
+                                <input className="file-path validate" type="text" readOnly={true}/>
                             </div>
                         </div>
                         <label htmlFor="fullname">Fullname</label>

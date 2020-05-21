@@ -9,11 +9,14 @@ import ActivateAccount from './components/ActivateAccount';
 import Profile from './components/Profile';
 import Search from './components/Search';
 import Comments from './components/Comments'
+import Footer from './components/Footer'
 import PasswordRecoveryEmail from './components/PasswordRecoveryEmail'
 import PasswordRecoveryForm from './components/PasswordRecoveryForm'
+import NotFound from './components/NotFound'
 import axios from 'axios';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import M from 'materialize-css/dist/js/materialize';
+
 
 class App extends React.Component {
 
@@ -79,38 +82,48 @@ class App extends React.Component {
 	render() {
 
 		return (
-			<BrowserRouter>
-				<div className="App grey darken-3">
-					<Route path='/' render={(props) => <Navbar {...props} loggedIn={this.state.userLoggedIn} currentUsername={this.state.username} appHandleLogOut={this.handleLogOut} />} />
-					<div className="container2">
-						<Route exact path='/' render={(props) => <Home {...props} loggedIn={this.state.userLoggedIn} loggedUsername={this.state.username} />} />
-						<Route exact path='/signup' component={SignUp} />
-						<Route exact path='/login' render={(props) => <SignIn {...props} handleLogIn={this.handleLogIn} />} />
-						<Route exact path='/account-verified' component={ActivateAccount} />
-						<Route exact path='/password-recovery' component={PasswordRecoveryEmail} />
-						<Route exact path='/accounts/password-reset/confirm/:uid/:token/' component={PasswordRecoveryForm} />
-						<Route exact path='/profile/:profileUsername' render={
-							(props) =>
-								<Profile
-									{...props}
-									loggedIn={this.state.userLoggedIn}
-									loggedUsername={this.state.username}
-								/>}
-						/>
+			<React.Fragment>
+				<header></header>
+				<main>
+					<BrowserRouter>
+						<div className="App grey darken-3">
+							<Route path='/' render={(props) => <Navbar {...props} loggedIn={this.state.userLoggedIn} currentUsername={this.state.username} appHandleLogOut={this.handleLogOut} />} />
+							<div className="container2">
+								<Switch>
+									<Route exact path='/' render={(props) => <Home {...props} loggedIn={this.state.userLoggedIn} loggedUsername={this.state.username} />} />
+									<Route exact path='/signup' component={SignUp} />
+									<Route exact path='/login' render={(props) => <SignIn {...props} handleLogIn={this.handleLogIn} />} />
+									<Route exact path='/account-verified' component={ActivateAccount} />
+									<Route exact path='/password-recovery' component={PasswordRecoveryEmail} />
+									<Route exact path='/accounts/password-reset/confirm/:uid/:token/' component={PasswordRecoveryForm} />
+									<Route exact path='/profile/:profileUsername' render={
+										(props) =>
+											<Profile
+												{...props}
+												loggedIn={this.state.userLoggedIn}
+												loggedUsername={this.state.username}
+											/>}
+									/>
 
-						<Route exact path='/settings/' render={(props) =>
-							<ProfileSettings
-								{...props}
-								loggedUsername={this.state.username}
-							/>
+									<Route exact path='/settings/' render={(props) =>
+										<ProfileSettings
+											{...props}
+											loggedUsername={this.state.username}
+										/>
 
-						}
-						/>
-						<Route exact path='/search/:search_input' render={(props) => <Search {...props} />} />
-						<Route exact path='/post-detail/:postId' render={(props) => <Comments {...props} loggedUsername={this.state.username}/>}/>
-					</div>
-				</div >
-			</BrowserRouter>
+									}
+									/>
+									<Route exact path='/search/:search_input' render={(props) => <Search {...props} />} />
+									<Route exact path='/post-detail/:postId' render={(props) => <Comments {...props} loggedUsername={this.state.username} />} />
+									<Route exact path='/404-not-found' component={NotFound} />
+									<Redirect to="/404-not-found" />
+								</Switch>
+							</div>
+						</div >
+					</BrowserRouter>
+				</main>
+				<Footer />
+			</React.Fragment>
 		);
 	}
 

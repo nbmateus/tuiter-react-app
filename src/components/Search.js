@@ -15,6 +15,7 @@ class Search extends React.Component {
     }
 
     componentDidMount() {
+        window.scrollTo(0, 0)
         this.getSearchResults()
     }
 
@@ -92,7 +93,7 @@ class Search extends React.Component {
             } else {
                 searchResultsDiv = (
                     <div className="center">
-                        <h4>{"we couldn't found any user."}</h4>
+                        <h4 className="white-text">{"we couldn't find any user."}</h4>
                     </div>
                 )
             }
@@ -100,7 +101,7 @@ class Search extends React.Component {
 
         return (
             <div>
-                <div className="white-text center"><br />{this.state.numberOfResults + " results."}</div>
+                <div className="white-text center"><br />{this.state.numberOfResults + " results"}</div>
                 {searchResultsDiv}
                 {loadMore}
             </div>

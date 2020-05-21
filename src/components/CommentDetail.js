@@ -14,6 +14,7 @@ class CommentDetail extends React.Component {
             confirmDelete: false,
             iDidLikeThisComment: false,
             userProfilePicture: null,
+            deletingComment: false,
         }
     }
 
@@ -100,6 +101,15 @@ class CommentDetail extends React.Component {
         })
     }
 
+    deleteComment = (e) => {
+        e.preventDefault();
+        this.setState({
+            deletingComment: true,
+        })
+        M.Tooltip.getInstance(document.querySelector('#delCommentTooltip' + this.state.comment.id)).close();
+        this.props.deleteComment(this.state.comment.id)
+    }
+
     render() {
 
         var favButton = this.state.iDidLikeThisComment ? (
@@ -134,17 +144,28 @@ class CommentDetail extends React.Component {
         ) : (
                 <div></div>
             )
+        
 
         var deleteBtn = <div></div>
-        if (this.props.loggedUsername === this.state.comment.user) {
+        if (this.state.deletingComment) {
+            deleteBtn = (
+                <div className="preloader-wrapper small active">
+                    <div className="spinner-layer spinner-teal-only">
+                        <div className="circle-clipper left">
+                            <div className="circle"></div>
+                        </div><div className="gap-patch">
+                            <div className="circle"></div>
+                        </div><div className="circle-clipper right">
+                            <div className="circle"></div>
+                        </div>
+                    </div>
+                </div>
+            )
+        } else if (this.props.loggedUsername === this.state.comment.user) {
             deleteBtn = this.state.confirmDelete ? (
                 <div className="right">
                     <a href="/#" className="red-text">
-                        <i id={'delCommentTooltip' + this.state.comment.id} className="tooltipped right material-icons" data-position="top" data-tooltip="Click it again to delete this comment" onClick={(e) => {
-                            e.preventDefault();
-                            M.Tooltip.getInstance(document.querySelector('#delCommentTooltip' + this.state.comment.id)).close();
-                            this.props.deleteComment(this.state.comment.id)
-                        }}>delete</i>
+                        <i id={'delCommentTooltip' + this.state.comment.id} className="tooltipped right material-icons" data-position="top" data-tooltip="Click it again to delete this comment" onClick={this.deleteComment}>delete</i>
                     </a>
                     <br />
                 </div>

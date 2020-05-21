@@ -12,7 +12,8 @@ class PostForm extends React.Component {
             mainPost: null,
             rePost: null,
             postStatus: null,
-            postFormTitle: "Make a Post"
+            postFormTitle: "Make a Post",
+            postFormSubmitting: false,
         }
     }
 
@@ -62,6 +63,9 @@ class PostForm extends React.Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
+        this.setState({
+            postFormSubmitting: true
+        })
         var form_data = new FormData();
         if (this.state.image !== null) {
             form_data.append('image', this.state.image, this.state.image.name);
@@ -90,10 +94,12 @@ class PostForm extends React.Component {
                     image: null,
                     mainPost: null,
                     rePost: null,
-                    postFormTitle: newPostFormTitle
+                    postFormTitle: newPostFormTitle,
+                    postFormSubmitting: false,
                 }, () => {
                     this.props.updatePostList();
                     M.textareaAutoResize(document.querySelector('#text'));
+                    document.getElementById("imageNameInput").value = ""
                 })
 
             })
@@ -120,6 +126,14 @@ class PostForm extends React.Component {
 
     render() {
 
+        var preloaderElement = this.state.postFormSubmitting ? (
+            <div className="progress">
+                <div className="indeterminate"></div>
+            </div>
+        ) : (
+            <div></div>
+        )
+
         var rePostDiv = this.state.rePost !== null ? (
             <div className="card">
                 <div className="card-content">
@@ -139,32 +153,33 @@ class PostForm extends React.Component {
                 </div>
             </div>
         ) : (
-            <div className="card">
-                <div className="card-content">
-                    <span className="center card-title">{this.state.postFormTitle}</span>
-                    <form onSubmit={this.handleSubmit}>
-                        <div className="input-field">
+                <div className="card">
+                    <div className="card-content">
+                        <span className="center card-title">{this.state.postFormTitle}</span>
+                        {preloaderElement}
+                        <form onSubmit={this.handleSubmit}>
+                            <div className="input-field">
 
-                            <textarea className="materialize-textarea" value={this.state.text} id="text" type="textarea" required maxLength="300" onChange={this.handleChange} />
-                            <label>Type something...</label>
-                        </div>
-                        <div className="file-field input-field">
-                            <div className="waves-effect waves-light btn-small">
-                                <span>Image</span>
-                                <input type="file" onChange={this.handleImageUpload} />
+                                <textarea className="materialize-textarea" value={this.state.text} id="text" type="textarea" required maxLength="300" onChange={this.handleChange} />
+                                <label>Type something...</label>
                             </div>
-                            <div className="file-path-wrapper">
-                                <input className="file-path validate" type="text" />
+                            <div className="file-field input-field">
+                                <div className="waves-effect waves-light btn-small">
+                                    <span>Image</span>
+                                    <input type="file" onChange={this.handleImageUpload} />
+                                </div>
+                                <div className="file-path-wrapper">
+                                    <input id="imageNameInput" className="file-path validate" type="text" readOnly={true}/>
+                                </div>
                             </div>
-                        </div>
-                        {rePostDiv}
-                        <br />
-                        <br />
-                        <button className="waves-effect waves-light btn-small">Submit</button>
-                    </form>
+                            {rePostDiv}
+                            <br />
+                            <br />
+                            <button className="waves-effect waves-light btn-small">Submit</button>
+                        </form>
+                    </div>
                 </div>
-            </div>
-        )
+            )
 
         return (
             postFormView

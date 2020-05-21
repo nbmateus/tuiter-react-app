@@ -15,6 +15,7 @@ class PostDetail extends React.Component {
             iDidLikeThisPost: false,
             confirmDelete: false,
             userProfilePicture: null,
+            deletingPost: false,
         }
     }
 
@@ -152,18 +153,39 @@ class PostDetail extends React.Component {
         })
     }
 
+    deletePost = (e) => {
+        e.preventDefault();
+        this.setState({
+            deletingPost: true
+        })
+        M.Tooltip.getInstance(document.querySelector('#delPostTooltip' + this.state.post.id)).close();
+        this.props.deletePost(this.state.post.id)
+    }
+
     render() {
 
+
+
         var deleteBtn = <div></div>
-        if (this.props.loggedUsername === this.state.post.user) {
+        if (this.state.deletingPost) {
+            deleteBtn = (
+                <div className="preloader-wrapper small active">
+                    <div className="spinner-layer spinner-teal-only">
+                        <div className="circle-clipper left">
+                            <div className="circle"></div>
+                        </div><div className="gap-patch">
+                            <div className="circle"></div>
+                        </div><div className="circle-clipper right">
+                            <div className="circle"></div>
+                        </div>
+                    </div>
+                </div>
+            )
+        }else if (this.props.loggedUsername === this.state.post.user) {
             deleteBtn = this.state.confirmDelete ? (
                 <div className="right">
                     <a href="/#" className="red-text">
-                        <i id={'delPostTooltip' + this.state.post.id} className="tooltipped right material-icons" data-position="top" data-tooltip="Click it again to delete this post" onClick={(e) => {
-                            e.preventDefault();
-                            M.Tooltip.getInstance(document.querySelector('#delPostTooltip' + this.state.post.id)).close();
-                            this.props.deletePost(this.state.post.id)
-                        }}>delete</i>
+                        <i id={'delPostTooltip' + this.state.post.id} className="tooltipped right material-icons" data-position="top" data-tooltip="Click it again to delete this post" onClick={this.deletePost}>delete</i>
                     </a>
                     <br />
                 </div>
@@ -234,7 +256,7 @@ class PostDetail extends React.Component {
                     <div className="row ">
                         <div className="col s11">
                             <Link to={"/profile/" + this.state.post.user}>
-                                <b className=" grey-text text-darken-4"><h5 className="valign-wrapper">{userPfpElement}&nbsp;&nbsp;{"@"+this.state.post.user}</h5></b>
+                                <b className=" grey-text text-darken-4"><h5 className="valign-wrapper">{userPfpElement}&nbsp;&nbsp;{"@" + this.state.post.user}</h5></b>
                             </Link>
                         </div>
                         <div className="col s1">

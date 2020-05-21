@@ -118,6 +118,14 @@ class Navbar extends React.Component {
         })
     }
 
+    handleSearchSubmit = (e) => {
+        e.preventDefault();
+        this.setState({
+            searchBoxInput: ""
+        })
+        this.props.history.push('/search/' + this.state.searchBoxInput)
+    }
+
     toggleMobileSearchBar() {
         this.setState({
             showMobileSearchbar: !this.state.showMobileSearchbar
@@ -138,15 +146,15 @@ class Navbar extends React.Component {
                     <i className="material-icons right">arrow_drop_down</i>
                 </a>
                 <ul id="dropdown1" className="dropdown-content">
-                        <li><NavLink to={"/profile/" + this.props.currentUsername + "/"}>My Profile</NavLink></li>
-                        <li><NavLink to="/">Home</NavLink></li>
-                        <li><NavLink to="/settings">Settings</NavLink></li>
-                        <li className="divider"></li>
-                        <li><a href="/#" onClick={(e) => {
-                            e.preventDefault()
-                            this.props.appHandleLogOut()
-                        }}>Log Out</a></li>
-                    </ul>
+                    <li><NavLink to={"/profile/" + this.props.currentUsername + "/"}>My Profile</NavLink></li>
+                    <li><NavLink to="/">Home</NavLink></li>
+                    <li><NavLink to="/settings">Settings</NavLink></li>
+                    <li className="divider"></li>
+                    <li><a href="/#" onClick={(e) => {
+                        e.preventDefault()
+                        this.props.appHandleLogOut()
+                    }}>Log Out</a></li>
+                </ul>
             </li>
         ) : (
                 <React.Fragment>
@@ -186,30 +194,34 @@ class Navbar extends React.Component {
             <nav>
                 <div className="nav-wrapper teal">
                     <div className="container">
-                        <ul className="left hide-on-large-only">
-                            <li>
-                                <i className="material-icons">search</i>
-                            </li>
-                        </ul>
-                        <ul className="center hide-on-large-only">
-                            <li>
-                                <form onSubmit={(e) => {
-                                    e.preventDefault();
-                                    this.setState({
-                                        searchBoxInput: ""
-                                    })
-                                    this.props.history.push('/search/' + this.state.searchBoxInput)
-                                }}>
-                                    <div className="input-field">
-                                        <input className="autocomplete" id="searchBoxInput2" value={this.state.searchBoxInput} placeholder="Search users..." type="search" required onChange={this.handleSearchInput} />
-                                        <i className="material-icons right" onClick={() => {
-                                            this.setState({ searchBoxInput: "" });
-                                            this.toggleMobileSearchBar();
-                                        }}>close</i>
-                                    </div>
-                                </form>
-                            </li>
-                        </ul>
+                        <div className="row">
+                            <ul className="left hide-on-large-only col s1">
+                                <li>
+                                    <i className="material-icons left">search</i>
+                                </li>
+                            </ul>
+                            <ul className="center hide-on-large-only col s9">
+                                <li>
+                                    <form onSubmit={this.handleSearchSubmit}>
+                                        <div className="input-field">
+                                            <input className="autocomplete" id="searchBoxInput2" value={this.state.searchBoxInput} placeholder="Search users..." type="search" required onChange={this.handleSearchInput} />
+                                            <i className="material-icons right" onClick={() => {
+                                                this.setState({ searchBoxInput: "" });
+                                                document.getElementById('searchBoxInput2').focus();
+                                            }}>close</i>
+                                        </div>
+                                    </form>
+                                </li>
+                            </ul>
+                            <ul className="right hide-on-large-only col s2">
+                                <li>
+                                    <i className="material-icons right" onClick={() => {
+                                        this.setState({ searchBoxInput: "" });
+                                        this.toggleMobileSearchBar();
+                                    }}>arrow_forward</i>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </nav>
@@ -237,13 +249,7 @@ class Navbar extends React.Component {
 
                                 <ul className="right hide-on-med-and-down">
                                     <li>
-                                        <form onSubmit={(e) => {
-                                            e.preventDefault();
-                                            this.setState({
-                                                searchBoxInput: ""
-                                            })
-                                            this.props.history.push('/search/' + this.state.searchBoxInput)
-                                        }}>
+                                        <form onSubmit={this.handleSearchSubmit}>
                                             <div className="input-field">
 
                                                 <input className="autocomplete" id="searchBoxInput" value={this.state.searchBoxInput} placeholder="Search users..." type="search" required onChange={this.handleSearchInput} />

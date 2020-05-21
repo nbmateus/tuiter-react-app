@@ -15,6 +15,7 @@ class Comments extends React.Component {
             comments: [],
             commentsNextPage: null,
             componentLoaded: false,
+            loadingNextPage: false
         }
         this.formatDate = this.formatDate.bind(this)
         this.updateCommentList = this.updateCommentList.bind(this)
@@ -23,6 +24,7 @@ class Comments extends React.Component {
     }
 
     componentDidMount() {
+        window.scrollTo(0, 0)
         this.getPost()
     }
 
@@ -88,6 +90,9 @@ class Comments extends React.Component {
     }
 
     loadMoreComments() {
+        this.setState({
+            loadingNextPage: true
+        })
         axios.get(this.state.commentsNextPage, {
             headers: {
                 Authorization: Cookies.get('authtoken')
@@ -96,11 +101,14 @@ class Comments extends React.Component {
             .then(response => {
                 this.setState({
                     comments: [...this.state.comments, ...response.data.results],
-                    commentsNextPage: response.data.next
+                    commentsNextPage: response.data.next,
+                    loadingNextPage: false
                 })
             })
             .catch(error => {
-
+                this.setState({
+                    loadingNextPage: false
+                })
             })
     }
 
@@ -120,13 +128,19 @@ class Comments extends React.Component {
 
     render() {
 
-        var loadMoreComments = this.state.commentsNextPage === null ? (
-            <div></div>
-        ) : (
-                <div className="center">
-                    <button className="waves-effect waves-light btn-small" onClick={() => this.loadMoreComments()}>Load More</button>
+
+        var loadMoreComments = <div></div>
+        if (this.state.commentsNextPage !== null) {
+            loadMoreComments = this.state.loadingNextPage ? (
+                <div className="progress">
+                    <div className="indeterminate"></div>
                 </div>
-            )
+            ) : (
+                    <div className="center">
+                        <button className="waves-effect waves-light btn-small" onClick={() => this.loadMoreComments()}>Load More</button>
+                    </div>
+                )
+        }
 
         var commentForm = this.props.loggedUsername !== "" ? (
             <PostForm updatePostList={this.updateCommentList} mainPost={this.state.post.id} />
@@ -155,8 +169,9 @@ class Comments extends React.Component {
                         )
                     })}
                 </ul>
-                {commentForm}
                 {loadMoreComments}
+                <br/>
+                {commentForm}
             </div>
         ) : (
                 <div className="progress">
