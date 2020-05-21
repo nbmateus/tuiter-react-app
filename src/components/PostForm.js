@@ -160,7 +160,7 @@ class PostForm extends React.Component {
                         <form onSubmit={this.handleSubmit}>
                             <div className="input-field">
 
-                                <textarea className="materialize-textarea" value={this.state.text} id="text" type="textarea" required maxLength="300" onChange={this.handleChange} />
+                                <textarea className="materialize-textarea" value={this.state.text} id="text" type="textarea" required={this.state.rePost === null} maxLength="300" onChange={this.handleChange} />
                                 <label>Type something...</label>
                             </div>
                             <div className="file-field input-field">

@@ -274,7 +274,7 @@ class PostDetail extends React.Component {
                 <div className="card-action">
                     <div className="row">
                         <div className="col s4">
-                            <Link to={"/post-detail/" + this.state.post.id} className="black-text"><i className="material-icons">chat_bubble_outline</i></Link>
+                            <Link to={"/post-detail/" + this.state.post.id} className="black-text"><i className="material-icons left">chat_bubble_outline</i>{this.state.post.commentsCount}</Link>
                         </div>
                         <div className="col s4">
                             <a href="/#" className="black-text" onClick={(e) => e.preventDefault()}>{repostBtn}{this.state.post.sharedCount}</a>

@@ -5,7 +5,6 @@ import Cookies from 'js-cookie';
 import PostForm from './PostForm';
 import default_pfp from '../assets/default_pfp.jpg'
 import SearchResult from './SearchResult'
-import { Link } from 'react-router-dom'
 
 class Profile extends React.Component {
     constructor(props) {
@@ -430,9 +429,9 @@ class Profile extends React.Component {
                             <br />
                             {profilePictureElement}
                             <br />
-                            <span className="card-title"><h4>{this.state.profile.fullname}</h4></span>
+                            <span className="card-title"><h5><b>{this.state.profile.fullname}</b></h5></span>
 
-                            <Link to={"/profile/" + this.state.profile.user} className="card-title"><h5>@{this.state.profile.user}</h5></Link>
+                            <span className="card-title"><h5>@{this.state.profile.user}</h5></span>
                             {followBtn}
                         </div>
                         <div className="card-content">
