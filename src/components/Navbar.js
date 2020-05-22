@@ -100,7 +100,7 @@ class Navbar extends React.Component {
             searchBoxInput: e.target.value
         }, () => {
             if (this.state.searchBoxInput !== "") {
-                axios.get('http://nbmateus.pythonanywhere.com/accounts/profile-list/?search=' + this.state.searchBoxInput)
+                axios.get('https://nbmateus.pythonanywhere.com/accounts/profile-list/?search=' + this.state.searchBoxInput)
                     .then(response => {
                         var autocompleteResults = {};
                         for (var i = 0; i < response.data.results.length; i++) {

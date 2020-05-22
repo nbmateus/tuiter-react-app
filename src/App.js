@@ -31,7 +31,6 @@ class App extends React.Component {
 	}
 
 	componentDidMount() {
-		//M.AutoInit();
 		M.Dropdown.init(document.querySelector('#idDropdownTrigger'), {
 			coverTrigger: false,
 		})
@@ -43,7 +42,7 @@ class App extends React.Component {
 
 
 	handleLogOut() {
-		axios.post('http://nbmateus.pythonanywhere.com/accounts/logout/', {}, {
+		axios.post('https://nbmateus.pythonanywhere.com/accounts/logout/', {}, {
 			headers: {
 				Authorization: Cookies.get('authtoken')
 			}
@@ -63,7 +62,7 @@ class App extends React.Component {
 	}
 
 	handleLogIn() {
-		axios.get('http://nbmateus.pythonanywhere.com/accounts/user/', {
+		axios.get('https://nbmateus.pythonanywhere.com/accounts/user/', {
 			headers: {
 				Authorization: Cookies.get('authtoken')
 			}

@@ -54,7 +54,7 @@ class Profile extends React.Component {
 
 
     getProfile() {
-        axios.get('http://nbmateus.pythonanywhere.com/accounts/profile/' + this.props.match.params.profileUsername + '/')
+        axios.get('https://nbmateus.pythonanywhere.com/accounts/profile/' + this.props.match.params.profileUsername + '/')
             .then(response => {
                 this.setState({
                     profile: response.data,
@@ -81,7 +81,7 @@ class Profile extends React.Component {
     }
 
     amIFollowingThisUser() {
-        axios.get('http://nbmateus.pythonanywhere.com/accounts/am-i-following-user/' + this.state.profile.user + '/', {
+        axios.get('https://nbmateus.pythonanywhere.com/accounts/am-i-following-user/' + this.state.profile.user + '/', {
             headers: {
                 Authorization: Cookies.get('authtoken')
             }
@@ -143,7 +143,7 @@ class Profile extends React.Component {
     }
 
     deletePost(postId) {
-        axios.delete('http://nbmateus.pythonanywhere.com/postings/post-detail/' + postId + '/', {
+        axios.delete('https://nbmateus.pythonanywhere.com/postings/post-detail/' + postId + '/', {
             headers: {
                 Authorization: Cookies.get('authtoken')
             }
@@ -158,7 +158,7 @@ class Profile extends React.Component {
 
     handleFollowBtn() {
         if (this.state.imFollowingThisUser) {
-            axios.delete('http://nbmateus.pythonanywhere.com/accounts/profile/' + this.state.profile.user + '/follow/', {
+            axios.delete('https://nbmateus.pythonanywhere.com/accounts/profile/' + this.state.profile.user + '/follow/', {
                 headers: {
                     Authorization: Cookies.get('authtoken')
                 }
@@ -175,7 +175,7 @@ class Profile extends React.Component {
 
                 })
         } else if (!this.state.imFollowingThisUser) {
-            axios.post('http://nbmateus.pythonanywhere.com/accounts/profile/' + this.state.profile.user + '/follow/', {}, {
+            axios.post('https://nbmateus.pythonanywhere.com/accounts/profile/' + this.state.profile.user + '/follow/', {}, {
                 headers: {
                     Authorization: Cookies.get('authtoken')
                 }

@@ -22,7 +22,7 @@ class PasswordRecoveryForm extends React.Component {
         this.setState({
             message: "loading"
         })
-        axios.post('http://nbmateus.pythonanywhere.com/accounts/password-reset/confirm/' + this.props.match.params.uid + '/' + this.props.match.params.token + '/', {
+        axios.post('https://nbmateus.pythonanywhere.com/accounts/password-reset/confirm/' + this.props.match.params.uid + '/' + this.props.match.params.token + '/', {
             uid: this.props.match.params.uid,
             token: this.props.match.params.token,
             new_password1: this.state.newPassword,
@@ -85,7 +85,6 @@ class PasswordRecoveryForm extends React.Component {
                 <span className="black-text">
                     <h5 className="center">Confirm Password Reset</h5>
                     <form onSubmit={this.handleSubmit}>
-                        {messageElement}
                         <div className="input-field col s6">
                             <input id="newPassword" type="password" className="validate" onChange={this.handleChange} required />
                             <label htmlFor="newPassword">New Password</label>
@@ -95,6 +94,7 @@ class PasswordRecoveryForm extends React.Component {
                             <label htmlFor="confirmNewPassword">Confirm New Password</label>
                         </div>
                         <br />
+                        {messageElement}
                         <button className="waves-effect waves-light btn-small" style={{ width: "100%" }}>Set New Password</button>
                     </form>
                 </span>

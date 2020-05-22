@@ -31,7 +31,7 @@ class PostDetail extends React.Component {
     }
 
     getUserprofilePicture() {
-        axios.get('http://nbmateus.pythonanywhere.com/accounts/profile/' + this.state.post.user + '/')
+        axios.get('https://nbmateus.pythonanywhere.com/accounts/profile/' + this.state.post.user + '/')
             .then(response => {
                 this.setState({
                     userProfilePicture: response.data.profilePicture
@@ -43,7 +43,7 @@ class PostDetail extends React.Component {
     }
 
     didILikeThisPost() {
-        axios.get('http://nbmateus.pythonanywhere.com/postings/did-i-like-post/' + this.state.post.id + '/', {
+        axios.get('https://nbmateus.pythonanywhere.com/postings/did-i-like-post/' + this.state.post.id + '/', {
             headers: {
                 Authorization: Cookies.get('authtoken')
             }
@@ -85,7 +85,7 @@ class PostDetail extends React.Component {
     isRePost() {
         var completePost = this.state.post;
         if (this.state.post.rePost !== null) {
-            axios.get('http://nbmateus.pythonanywhere.com/postings/post-detail/' + this.state.post.rePost + '/', {
+            axios.get('https://nbmateus.pythonanywhere.com/postings/post-detail/' + this.state.post.rePost + '/', {
                 headers: {
                     Authorization: Cookies.get('authtoken')
                 }
@@ -108,7 +108,7 @@ class PostDetail extends React.Component {
 
     doLikePost() {
         if (this.state.iDidLikeThisPost) {
-            axios.delete('http://nbmateus.pythonanywhere.com/postings/post-detail/' + this.state.post.id + '/like/', {
+            axios.delete('https://nbmateus.pythonanywhere.com/postings/post-detail/' + this.state.post.id + '/like/', {
                 headers: {
                     Authorization: Cookies.get('authtoken')
                 }
@@ -125,7 +125,7 @@ class PostDetail extends React.Component {
 
                 })
         } else {
-            axios.post('http://nbmateus.pythonanywhere.com/postings/post-detail/' + this.state.post.id + '/like/', {}, {
+            axios.post('https://nbmateus.pythonanywhere.com/postings/post-detail/' + this.state.post.id + '/like/', {}, {
                 headers: {
                     Authorization: Cookies.get('authtoken')
                 }

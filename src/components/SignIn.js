@@ -36,7 +36,7 @@ class SignIn extends React.Component {
                 { username: this.state.formUsername, password: this.state.formPassword }
             )
 
-        axios.post('http://nbmateus.pythonanywhere.com/accounts/login/', data)
+        axios.post('https://nbmateus.pythonanywhere.com/accounts/login/', data)
             .then(response => {
                 Cookies.set('authtoken', "Token " + response.data.key);
                 this.props.handleLogIn();
@@ -78,7 +78,6 @@ class SignIn extends React.Component {
                 <span className="black-text">
                     <h5 className="center">Log In</h5>
                     <form onSubmit={this.handleSubmit}>
-                        {errorElement}
                         <div className="input-field col s6">
                             <input id="formUsername" type="text" className="validate" onChange={this.handleChange} required />
                             <label htmlFor="formUsername">Username or Email</label>
@@ -91,6 +90,7 @@ class SignIn extends React.Component {
                             <Link to="/password-recovery">Forgot Password?</Link>
                         </div>
                         <br />
+                        {errorElement}
                         <button className="waves-effect waves-light btn-small" style={{ width: "100%" }}>Log In</button>
                     </form>
                 </span>

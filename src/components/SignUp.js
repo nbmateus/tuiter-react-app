@@ -24,7 +24,7 @@ class SignUp extends React.Component {
         this.setState({
             formError: "loading"
         })
-        axios.post('http://nbmateus.pythonanywhere.com/accounts/registration/', {
+        axios.post('https://nbmateus.pythonanywhere.com/accounts/registration/', {
             username: this.state.username,
             email: this.state.email,
             password1: this.state.password1,
@@ -95,7 +95,6 @@ class SignUp extends React.Component {
                     <span className="black-text">
                         <h5 className="center">Sign Up</h5>
                         <form onSubmit={this.handleSubmit}>
-                            {errorElement}
                             <div className="input-field col s6">
                                 <input id="username" type="text" className="validate" onChange={this.handleChange} required />
                                 <label htmlFor="username">Username</label>
@@ -113,6 +112,7 @@ class SignUp extends React.Component {
                                 <label htmlFor="password2">Confirm Password</label>
                             </div>
                             <br />
+                            {errorElement}
                             <button className="waves-effect waves-light btn-small" style={{ width: "100%" }}>Sign Up</button>
                         </form>
                     </span>

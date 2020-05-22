@@ -78,7 +78,7 @@ class PostForm extends React.Component {
             form_data.append('rePost', this.state.rePost.id);
         }
 
-        axios.post('http://nbmateus.pythonanywhere.com/postings/create-post/', form_data, {
+        axios.post('https://nbmateus.pythonanywhere.com/postings/create-post/', form_data, {
             headers: {
                 Authorization: Cookies.get('authtoken')
             }
@@ -156,7 +156,6 @@ class PostForm extends React.Component {
                 <div className="card">
                     <div className="card-content">
                         <span className="center card-title">{this.state.postFormTitle}</span>
-                        {preloaderElement}
                         <form onSubmit={this.handleSubmit}>
                             <div className="input-field">
 
@@ -175,6 +174,7 @@ class PostForm extends React.Component {
                             {rePostDiv}
                             <br />
                             <br />
+                            {preloaderElement}
                             <button className="waves-effect waves-light btn-small">Submit</button>
                         </form>
                     </div>

@@ -48,7 +48,7 @@ class ProfileSettings extends React.Component {
 
 
     getProfile() {
-        axios.get('http://nbmateus.pythonanywhere.com/accounts/profile/' + this.state.username + '/')
+        axios.get('https://nbmateus.pythonanywhere.com/accounts/profile/' + this.state.username + '/')
             .then(response => {
                 this.setState({
                     fullname: response.data.fullname,
@@ -107,7 +107,7 @@ class ProfileSettings extends React.Component {
         form_data.append('description', this.state.description);
         form_data.append('isPrivate', this.state.isPrivate);
 
-        axios.put('http://nbmateus.pythonanywhere.com/accounts/profile/' + this.state.username + '/update/', form_data, {
+        axios.put('https://nbmateus.pythonanywhere.com/accounts/profile/' + this.state.username + '/update/', form_data, {
             headers: {
                 Authorization: Cookies.get('authtoken')
             }
@@ -128,7 +128,7 @@ class ProfileSettings extends React.Component {
         this.setState({
             passwordChangeStatus: "loading"
         })
-        axios.post('http://nbmateus.pythonanywhere.com/accounts/password/change/', {
+        axios.post('https://nbmateus.pythonanywhere.com/accounts/password/change/', {
             old_password: this.state.old_password,
             new_password1: this.state.new_password1,
             new_password2: this.state.new_password2
@@ -231,7 +231,6 @@ class ProfileSettings extends React.Component {
                 <div className="card-panel">
                     <form onSubmit={this.handleSubmitProfileChanges}>
                         <h4>Profile Settings</h4>
-                        {profileChangesStatusDiv}
                         {profilePictureElement}
                         <div className="file-field input-field">
                             <div className="waves-effect waves-light btn-small">
@@ -248,15 +247,17 @@ class ProfileSettings extends React.Component {
                         <input id="description" type="text" className="validate" maxLength="200" value={this.state.description} onChange={this.handleChange} />
                         <br />
                         <br />
+                        <h6>Privacy<br/><label>If you set your privacy to private, your posts will be only visible for the users that you follow.</label></h6>
                         <div className="switch">
                             <label>
-                                Public Profile
+                                Public
                                 <input type="checkbox" checked={this.state.isPrivate} onChange={this.handleSwitch} />
                                 <span className="lever"></span>
-                                Private Profile
+                                Private
                             </label>
                         </div>
                         <br />
+                        {profileChangesStatusDiv}
                         <button className="waves-effect waves-light btn-small">Save Profile Changes</button>
                     </form>
                     <br />
@@ -264,7 +265,6 @@ class ProfileSettings extends React.Component {
                     <br />
                     <form onSubmit={this.handleSubmitPasswordChange}>
                         <h4 >Password Change</h4>
-                        {passwordChangeStatusDiv}
                         <div className="input-field">
                             <input id="old_password" type="password" className="validate" value={this.state.old_password} onChange={this.handleChange} required />
                             <label htmlFor="old_password">Old Password</label>
@@ -278,6 +278,7 @@ class ProfileSettings extends React.Component {
                             <label htmlFor="new_password2">Confirm New Password</label>
                         </div>
                         <br />
+                        {passwordChangeStatusDiv}
                         <button className="waves-effect waves-light btn-small">Save Password Change</button>
                     </form>
                 </div>

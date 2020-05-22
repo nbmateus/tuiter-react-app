@@ -67,7 +67,7 @@ class Home extends React.Component {
     }
 
     getPostList() {
-        axios.get('http://nbmateus.pythonanywhere.com/postings/index-main-post-list/', {
+        axios.get('https://nbmateus.pythonanywhere.com/postings/index-main-post-list/', {
             headers: {
                 Authorization: Cookies.get('authtoken')
             }
@@ -91,7 +91,7 @@ class Home extends React.Component {
     }
 
     deletePost(postId) {
-        axios.delete('http://nbmateus.pythonanywhere.com/postings/post-detail/' + postId + '/', {
+        axios.delete('https://nbmateus.pythonanywhere.com/postings/post-detail/' + postId + '/', {
             headers: {
                 Authorization: Cookies.get('authtoken')
             }

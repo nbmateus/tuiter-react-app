@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "tuiter-app",
+    "tuiter": "project-tuiter"
+  }
+}

@@ -8,8 +8,10 @@ class Footer extends React.Component {
                     <div className="row">
                         <div className="col l6 s12">
                             <h5 className="white-text">About Tuiter</h5>
-                            <p className="grey-text text-lighten-4">The idea of this project was based on Twitter and its main functionality:
-					  each user can post short texts or images and share them with other users.</p>
+                            <p className="grey-text text-lighten-4">Learning React and Django REST Framework is the reason why this project was created.
+                            The idea was based on Twitter and its main functionality:
+                             registered users can post short texts or images in their own profiles. They can also follow other users and comment
+                             on their posts.</p>
                         </div>
                         <div className="col l4 offset-l2 s12">
                             <h5 className="white-text">Github Repositories</h5>

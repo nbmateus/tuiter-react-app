@@ -27,7 +27,7 @@ class CommentDetail extends React.Component {
     }
 
     getUserprofilePicture() {
-        axios.get('http://nbmateus.pythonanywhere.com/accounts/profile/' + this.state.comment.user + '/')
+        axios.get('https://nbmateus.pythonanywhere.com/accounts/profile/' + this.state.comment.user + '/')
             .then(response => {
                 this.setState({
                     userProfilePicture: response.data.profilePicture
@@ -39,7 +39,7 @@ class CommentDetail extends React.Component {
     }
 
     didILikeThisComment() {
-        axios.get('http://nbmateus.pythonanywhere.com/postings/did-i-like-post/' + this.state.comment.id + '/', {
+        axios.get('https://nbmateus.pythonanywhere.com/postings/did-i-like-post/' + this.state.comment.id + '/', {
             headers: {
                 Authorization: Cookies.get('authtoken')
             }
@@ -56,7 +56,7 @@ class CommentDetail extends React.Component {
 
     doLikeComment() {
         if (this.state.iDidLikeThisComment) {
-            axios.delete('http://nbmateus.pythonanywhere.com/postings/post-detail/' + this.state.comment.id + '/like/', {
+            axios.delete('https://nbmateus.pythonanywhere.com/postings/post-detail/' + this.state.comment.id + '/like/', {
                 headers: {
                     Authorization: Cookies.get('authtoken')
                 }
@@ -73,7 +73,7 @@ class CommentDetail extends React.Component {
 
                 })
         } else {
-            axios.post('http://nbmateus.pythonanywhere.com/postings/post-detail/' + this.state.comment.id + '/like/', {}, {
+            axios.post('https://nbmateus.pythonanywhere.com/postings/post-detail/' + this.state.comment.id + '/like/', {}, {
                 headers: {
                     Authorization: Cookies.get('authtoken')
                 }

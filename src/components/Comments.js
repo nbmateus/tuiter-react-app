@@ -38,7 +38,7 @@ class Comments extends React.Component {
     }
 
     getPost() {
-        axios.get('http://nbmateus.pythonanywhere.com/postings/post-detail/' + this.props.match.params.postId + '/', {
+        axios.get('https://nbmateus.pythonanywhere.com/postings/post-detail/' + this.props.match.params.postId + '/', {
             headers: {
                 Authorization: Cookies.get('authtoken')
             }
@@ -76,7 +76,7 @@ class Comments extends React.Component {
     }
 
     deleteComment(commentId) {
-        axios.delete('http://nbmateus.pythonanywhere.com/postings/post-detail/' + commentId + '/', {
+        axios.delete('https://nbmateus.pythonanywhere.com/postings/post-detail/' + commentId + '/', {
             headers: {
                 Authorization: Cookies.get('authtoken')
             }
@@ -113,7 +113,7 @@ class Comments extends React.Component {
     }
 
     deletePost(postId) {
-        axios.delete('http://nbmateus.pythonanywhere.com/postings/post-detail/' + postId + '/', {
+        axios.delete('https://nbmateus.pythonanywhere.com/postings/post-detail/' + postId + '/', {
             headers: {
                 Authorization: Cookies.get('authtoken')
             }

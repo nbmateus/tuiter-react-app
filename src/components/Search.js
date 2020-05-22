@@ -33,7 +33,7 @@ class Search extends React.Component {
     }
 
     getSearchResults() {
-        axios.get('http://nbmateus.pythonanywhere.com/accounts/profile-list/?search=' + this.state.searchInput)
+        axios.get('https://nbmateus.pythonanywhere.com/accounts/profile-list/?search=' + this.state.searchInput)
             .then(response => {
                 this.setState({
                     searchResults: response.data.results,
